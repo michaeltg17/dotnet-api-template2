@@ -1,0 +1,8 @@
+{
+  "solution": "Public.Api.sln",
+  "solutionFolder": null,
+  "mappings": {
+    "Microsoft.EntityFrameworkCore": "../efcore/src/EFCore/EFCore.csproj"
+  },
+  "removeProjects": true
+}

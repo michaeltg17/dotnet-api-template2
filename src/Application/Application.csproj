@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutting\CrossCutting.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Requests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MimeMapping" />
+    <PackageReference Include="SimMetrics.Net" />
+    <PackageReference Include="SpreadCheetah" />
+  </ItemGroup>
+
+</Project>
