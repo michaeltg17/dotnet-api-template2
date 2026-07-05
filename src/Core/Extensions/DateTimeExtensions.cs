@@ -10,7 +10,7 @@
         /// <summary>
         /// <para>Truncates a DateTime to a specified resolution.</para>
         /// </summary>
-        /// <param name="date">The DateTime object to truncate</param>
+        /// <param name="dateTime">The DateTime object to truncate</param>
         /// <param name="resolution">e.g. to round to nearest second, DateTimeResolution.Second</param>
         /// <returns>Truncated DateTime</returns>
         public static DateTime Truncate(this DateTime dateTime, DateTimeResolution resolution)

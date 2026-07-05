@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Core.Testing.Builders
 {
-    public class ProblemDetailsBuilder : BuilderWithNew<ProblemDetailsBuilder, ProblemDetails>
+    public class ProblemDetailsBuilder : BuilderWithInstance<ProblemDetailsBuilder, ProblemDetails>
     {
         public ProblemDetailsBuilder() { Item.Extensions = new Dictionary<string, object?>(); }
 

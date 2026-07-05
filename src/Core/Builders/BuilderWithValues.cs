@@ -1,12 +1,13 @@
 ﻿namespace Core.Builders
 {
-    public abstract class BuilderWithValues<BuilderType, ObjectToBuildType> : Builder<ObjectToBuildType>
-        where BuilderType : BuilderWithValues<BuilderType, ObjectToBuildType>
+    public abstract class BuilderWithValues<TBuilder, TEntity> : Builder<TEntity>
+        where TBuilder : BuilderWithValues<TBuilder, TEntity>
     {
-        public BuilderType WithValues(Action<ObjectToBuildType> action)
+        public TBuilder WithValues(Action<TEntity> action)
         {
+            ArgumentNullException.ThrowIfNull(action);
             action(Item);
-            return (BuilderType)this;
+            return (TBuilder)this;
         }
     }
 }
