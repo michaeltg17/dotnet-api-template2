@@ -1,11 +1,8 @@
-# Public.Api
+# dotnet-api-template
 
-[![Build Status](https://dev.azure.com/MichaelTrullasGarcia/Public/_apis/build/status%2FPublic.Api%20-%20Build?branchName=main)](https://dev.azure.com/MichaelTrullasGarcia/Public/_build/latest?definitionId=3&branchName=main)
+.NET 10, ASP.NET Core Api + Tests template of my recommended architecture for a successful, dev efficient and scalable solution. 
 
-.NET 8, ASP.NET Core Api + Tests template of my recommended architecture for a successful, dev efficient and scalable solution. 
-
-See the new template here [dotnet-api-template](https://github.com/michaeltg17/dotnet-api-template)
-
+## Tech stack
 API:
 - ASP.NET Core
 - OpenAPI
@@ -14,15 +11,15 @@ API:
 - Anemic Domain Model
 - Services
 - Entity Framework Core
-- SQL Server
+- PostgreSQL
 
 Tests:
 - Unit, integration and functional tests
 - xUnit
 - Moq
-- FluentAssertions
+- AwesomeAssertions
 - Coverlet + ReportGenerator
 
-Build/Deploy:
-- Build + Unit/Integration tests + Coverage + Artifacts
-- Uses another pipeline for deployment + functional tests (see [Public.Deployment](https://github.com/michaeltg17/Public.Deployment) for details)
+CI/CD:
+- CI in docker with ci.sh that runs in GitHub Actions and can also be run locally.
+- CI does Build + Tests + Coverage + Docker image push to ghcr
