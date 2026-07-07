@@ -1,9 +1,17 @@
-﻿namespace Domain.Models
+using Core.Domain;
+
+namespace Domain.Models
 {
-    public class Product : Entity
+    public record Product : IIdentifiable, IGloballyIdentifiable, IAudited
     {
-        public required string Name { get; init; }
-        public required string Description { get; init; }
-        public decimal Price { get; init; }
+        public long Id { get; set; }
+        public Guid Guid { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public decimal Price { get; set; }
+        public long CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public long? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }
