@@ -13,10 +13,10 @@ namespace FunctionalTests.Tests
         {
             //Given
             const string imagePath = @"Images\didi.jpeg";
-            var imageGroup = await ApiClient.Api.SaveImageGroup(imagePath).To<ImageGroup>();
+            var imageGroup = await ApiClient.SaveImageGroup(imagePath).To<ImageGroup>();
 
             //When
-            var image = await ApiClient.Api.GetImage(imageGroup.Images.First().Id).To<Image>();
+            var image = await ApiClient.GetImage(imageGroup.Images.First().Id).To<Image>();
 
             //Then
             var uploadedImageBytes = File.ReadAllBytes(imagePath);
@@ -30,7 +30,7 @@ namespace FunctionalTests.Tests
         {
             //When
             const long id = 600;
-            var response = await ApiClient.Api.GetImage(id: 600);
+            var response = await ApiClient.GetImage(id: 600);
 
             //Then
             await ProblemDetailsValidator.ValidateNotFoundException(response, "Image", id);

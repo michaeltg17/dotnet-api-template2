@@ -50,5 +50,10 @@ namespace ApiClient.Endpoints
 
             return httpClient.PostAsJsonAsync(url, request);
         }
+
+        public Task<HttpResponseMessage> RequestUnexistingRoute()
+        {
+            return httpClient.GetAsync("UnexistingRoute/UnexistingRoute");
+        }
     }
 }

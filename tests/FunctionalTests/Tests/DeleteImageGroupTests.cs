@@ -14,16 +14,16 @@ namespace FunctionalTests.Tests
         {
             //Given
             const string imagePath = @"Images\didi.jpeg";
-            var imageGroup = await ApiClient.Api.SaveImageGroup(imagePath).To<ImageGroup>();
-            var imageGroup2 = await ApiClient.Api.GetImageGroup(imageGroup.Id).To<ImageGroup>();
+            var imageGroup = await ApiClient.SaveImageGroup(imagePath).To<ImageGroup>();
+            var imageGroup2 = await ApiClient.GetImageGroup(imageGroup.Id).To<ImageGroup>();
             imageGroup.Should().BeEquivalentTo(imageGroup2);
 
             //When
-            var deleteResponse = await ApiClient.Api.DeleteImageGroup(imageGroup.Id);
+            var deleteResponse = await ApiClient.DeleteImageGroup(imageGroup.Id);
 
             //Then
             deleteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var getResponse = await ApiClient.Api.GetImageGroup(imageGroup.Id);
+            var getResponse = await ApiClient.GetImageGroup(imageGroup.Id);
             getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -32,7 +32,7 @@ namespace FunctionalTests.Tests
         {
             //When
             const long id = 600;
-            var response = await ApiClient.Api.DeleteImageGroup(id);
+            var response = await ApiClient.DeleteImageGroup(id);
 
             //Then
             await ProblemDetailsValidator.ValidateNotFoundException(response, "ImageGroup", id);
