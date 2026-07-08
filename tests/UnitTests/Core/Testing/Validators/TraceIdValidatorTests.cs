@@ -1,5 +1,5 @@
 ﻿using Core.Testing;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace UnitTests.Core.Testing.Validators

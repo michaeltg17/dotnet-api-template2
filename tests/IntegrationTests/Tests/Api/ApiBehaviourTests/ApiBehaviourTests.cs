@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Xunit;
 using Core.Testing.Builders;
 using Microsoft.AspNetCore.Mvc;

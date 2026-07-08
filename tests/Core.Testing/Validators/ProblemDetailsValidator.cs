@@ -1,7 +1,7 @@
 ﻿using ApiClient.Extensions;
 using Core.Testing.Builders;
 using Core.Testing.Extensions;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

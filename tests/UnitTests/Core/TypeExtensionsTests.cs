@@ -1,6 +1,6 @@
 ﻿using Core.Extensions;
 using Xunit;
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace UnitTests.Core
 {

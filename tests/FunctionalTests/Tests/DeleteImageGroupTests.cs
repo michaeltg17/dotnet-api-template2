@@ -1,7 +1,7 @@
 ﻿using ApiClient.Extensions;
 using Core.Testing.Models;
 using Core.Testing.Validators;
-using FluentAssertions;
+using AwesomeAssertions;
 using System.Net;
 using Xunit;
 

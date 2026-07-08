@@ -4,6 +4,7 @@
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.Idioms" Version="4.18.1" />
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageVersion Include="AwesomeAssertions" Version="9.4.0" />
     <PackageVersion Include="ClosedXML" Version="0.104.2" />
     <PackageVersion Include="EPPlus" Version="7.3.2" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />

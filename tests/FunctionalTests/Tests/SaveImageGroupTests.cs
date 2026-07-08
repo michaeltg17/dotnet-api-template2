@@ -1,6 +1,6 @@
 ﻿using ApiClient.Extensions;
 using Core.Testing.Models;
-using FluentAssertions;
+using AwesomeAssertions;
 using System.Net;
 using Xunit;
 

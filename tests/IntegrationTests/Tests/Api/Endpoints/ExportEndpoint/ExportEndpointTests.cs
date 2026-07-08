@@ -2,7 +2,7 @@
 using ClosedXML.Excel;
 using Core.Extensions;
 using Domain.Models;
-using FluentAssertions;
+using AwesomeAssertions;
 using MoreLinq;
 using System.Net;
 using Xunit;
