@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace Api.Extensions
 {
@@ -38,17 +39,28 @@ namespace Api.Extensions
         {
             var isInternalServerError = httpContext.Response.StatusCode == (int)HttpStatusCode.InternalServerError;
 
+            var detail = exception switch
+            {
+                BadHttpRequestException { InnerException: JsonException jsonEx } => exception.Message + " " + jsonEx.Message,
+                BadHttpRequestException => exception.Message,
+                _ when isInternalServerError => "Internal server error. Please contact the API support.",
+                _ => exception!.Message
+            };
+
+            var problemDetails = new ProblemDetails
+            {
+                Title = isInternalServerError ? "InternalServerError" : exception!.GetType().GetNameWithoutGenericArity(),
+                Detail = detail,
+                Status = httpContext.Response.StatusCode,
+                Instance = httpContext.Request.Path,
+                Extensions = new Dictionary<string, object?>()
+            };
+
             return new ProblemDetailsContext
             {
                 Exception = isInternalServerError ? null : exception,
                 HttpContext = httpContext,
-                ProblemDetails =
-                {
-                    Title =  isInternalServerError ? "InternalServerError" : exception!.GetType().GetNameWithoutGenericArity(),
-                    Detail = isInternalServerError ? "Internal server error. Please contact the API support." : exception!.Message,
-                    Status = httpContext.Response.StatusCode,
-                    Instance = httpContext.Request.Path
-                }
+                ProblemDetails = problemDetails
             };
         }
     }
