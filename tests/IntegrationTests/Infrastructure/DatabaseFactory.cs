@@ -1,12 +1,11 @@
 ﻿using Core;
-using Xunit.Abstractions;
 using IntegrationTests.Settings;
 using Docker.DotNet.Models;
-using Docker.DotNet;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Dac;
 using Testcontainers.MsSql;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace IntegrationTests.Infrastructure
 {

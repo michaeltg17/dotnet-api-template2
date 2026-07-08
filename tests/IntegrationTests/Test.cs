@@ -1,5 +1,4 @@
-﻿using Xunit.Abstractions;
-using Serilog.Sinks.InMemory;
+﻿using Serilog.Sinks.InMemory;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,14 +32,16 @@ namespace IntegrationTests
             return DbContext.Database.ExecuteSqlRawAsync(sql);
         }
 
-        async Task IAsyncLifetime.DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await DeleteEntitiesFromDb();
             await Scope.DisposeAsync();
             WebApplicationFactoryFixture.FlushLogger();
         }
 
-        //Forced implementation by IAsyncLifetime, to be removed once xunit v3 gets production ready
-        public Task InitializeAsync() => Task.CompletedTask;
+        public ValueTask InitializeAsync()
+        {
+            return ValueTask.CompletedTask;
+        }
     }
 }

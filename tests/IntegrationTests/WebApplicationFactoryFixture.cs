@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Xunit;
-using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using IntegrationTests.Extensions;
@@ -25,7 +24,7 @@ namespace IntegrationTests
         public InMemorySink InMemorySink { get; set; } = default!;
         Database? Database { get; set; }
 
-        public async Task InitializeAsync()
+        async ValueTask IAsyncLifetime.InitializeAsync()
         {
             Database = await databaseFactory.Create();
         }

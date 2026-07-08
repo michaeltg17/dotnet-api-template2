@@ -19,14 +19,10 @@
 		<PackageReference Include="Serilog.Sinks.InMemory" />
 		<PackageReference Include="Serilog.Sinks.InMemory.Assertions" />
 		<PackageReference Include="Serilog.Sinks.Map" />
-		<PackageReference Include="Serilog.Sinks.XUnit" />
+		<PackageReference Include="Serilog.Sinks.XUnit.Injectable" />
 		<PackageReference Include="Testcontainers.MsSql" />
-		<PackageReference Include="xunit" />
 		<PackageReference Include="Xunit.DependencyInjection" />
-		<PackageReference Include="xunit.runner.visualstudio">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="xunit.v3" />
 	</ItemGroup>
 
 	<ItemGroup>
