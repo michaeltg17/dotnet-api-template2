@@ -1,12 +1,12 @@
-﻿using AwesomeAssertions;
-using Xunit;
+﻿using Api.Models.Requests;
+using ApiClient.Extensions;
+using AwesomeAssertions;
+using Core.Testing;
 using Core.Testing.Builders;
+using Core.Testing.Validators;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using ApiClient.Extensions;
-using Core.Testing.Extensions;
-using Core.Testing;
-using Api.Models.Requests;
+using Xunit;
 
 namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 {
@@ -21,8 +21,7 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 
             //Then
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = problemDetails.GetTraceId();
-            TraceIdValidator.IsValid(traceId).Should().BeTrue();
+            var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
 
             var expected = new ProblemDetailsBuilder()
                 .WithTraceId(traceId)
@@ -44,8 +43,7 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 
             //Then
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = problemDetails.GetTraceId();
-            TraceIdValidator.IsValid(traceId).Should().BeTrue();
+            var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
 
             var expected = new ProblemDetailsBuilder()
                 .WithTraceId(traceId)
@@ -60,7 +58,7 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
         public async Task ValidRequest_Ok()
         {
             //When
-            var response = await ApiClient.Test.Post(1L, new DateTime(2020, 1, 1), new TestPostRequest { Id2 = 2L });
+            var response = await ApiClient.Test.Post(1L, new DateTime(2020, 1, 1), new PostRequest { Id2 = 2L });
 
             //Then
             response.StatusCode.Should().Be(HttpStatusCode.OK);

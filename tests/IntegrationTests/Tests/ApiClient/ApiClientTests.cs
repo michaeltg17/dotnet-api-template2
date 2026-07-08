@@ -12,7 +12,7 @@ namespace IntegrationTests.Tests.ApiClient
     public class ApiClientTests : Test
     {
         [Fact]
-        public async Task WhenInternalServerError_ApiExceptionIsThrownWithExpectedProblemDetails()
+        public async Task InternalServerError_ApiExceptionIsThrownWithExpectedProblemDetails()
         {
             //When
             var response = await ApiClient.Test.ThrowInternalServerError();
@@ -37,7 +37,7 @@ namespace IntegrationTests.Tests.ApiClient
         }
 
         [Fact]
-        public async Task WhenNoContent_ApiClientExceptionIsThrown()
+        public async Task NoContent_ApiClientExceptionIsThrown()
         {
             //When
             var response = await ApiClient.Test.GetOk();

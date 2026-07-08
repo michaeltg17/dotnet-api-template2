@@ -21,7 +21,6 @@ public static class EndpointExtensions
         DeleteImageGroupV2Endpoint.Map(v2);
 
         var test = app.MapGroup("Test");
-        GetEndpoint.Map(test);
         GetOkEndpoint.Map(test);
         PostEndpoint.Map(test);
         ThrowInternalServerErrorEndpoint.Map(test);

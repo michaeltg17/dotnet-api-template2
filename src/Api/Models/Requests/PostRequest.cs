@@ -1,6 +1,6 @@
 ﻿namespace Api.Models.Requests
 {
-    public class TestPostRequest
+    public class PostRequest
     {
         public long Id2 { get; set; }
     }

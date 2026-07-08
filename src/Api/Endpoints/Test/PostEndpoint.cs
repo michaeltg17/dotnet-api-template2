@@ -11,7 +11,7 @@ namespace Api.Endpoints.Test
             app.MapPost("Post/{id}", (
                 long id,
                 [FromQuery] DateTime date,
-                [FromBody] TestPostRequest request,
+                [FromBody] PostRequest request,
                 CancellationToken cancellationToken) =>
             {
                 return Task.CompletedTask;

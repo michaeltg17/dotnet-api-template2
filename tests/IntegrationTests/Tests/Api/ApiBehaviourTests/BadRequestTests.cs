@@ -2,11 +2,10 @@ using AwesomeAssertions;
 using System.Collections.Generic;
 using Xunit;
 using Core.Testing.Builders;
+using Core.Testing.Validators;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using ApiClient.Extensions;
-using Core.Testing.Extensions;
-using Core.Testing;
 
 namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 {
@@ -26,41 +25,41 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
         {
             return new TheoryData<BadRequestCase>
             {
-                // Invalid: id cannot be parsed as long
+                // Invalid: route parameter id cannot be parsed as long
                 new BadRequestCase
                 {
                     Id = "a", Date = null!, Request = null!,
                     ExpectedInstance = "/Test/Post/a",
                     ExpectedDetail = "Failed to bind parameter \"long id\" from \"a\"."
                 },
-                // Invalid: date cannot be parsed as DateTime
+                // Invalid: query string date cannot be parsed as DateTime
                 new BadRequestCase
                 {
                     Id = (long)1, Date = "b", Request = null!,
                     ExpectedInstance = "/Test/Post/1",
                     ExpectedDetail = "Failed to bind parameter \"DateTime date\" from \"b\"."
                 },
-                // Missing: request body not provided
+                // Missing: body not provided
                 new BadRequestCase
                 {
                     Id = (long)1, Date = "2020-01-01", Request = null!,
                     ExpectedInstance = "/Test/Post/1",
-                    ExpectedDetail = "Required parameter \"TestPostRequest request\" was not provided from body."
+                    ExpectedDetail = "Required parameter \"PostRequest request\" was not provided from body."
                 },
-                // Invalid: JSON value cannot be converted to expected type
+                // Invalid: body cannot be converted to expected type
                 new BadRequestCase
                 {
                     Id = (long)1, Date = "2020-01-01", Request = "x",
                     ExpectedInstance = "/Test/Post/1",
-                    ExpectedDetail = "Failed to read parameter \"TestPostRequest request\" from the request body as JSON. The JSON value could not be converted to Api.Models.Requests.TestPostRequest. Path: $ | LineNumber: 0 | BytePositionInLine: 3."
+                    ExpectedDetail = "Failed to read parameter \"PostRequest request\" from the request body as JSON. The JSON value could not be converted to Api.Models.Requests.PostRequest. Path: $ | LineNumber: 0 | BytePositionInLine: 3."
                 },
-                // Invalid: JSON property value cannot be converted to expected type
+                // Invalid: body property value cannot be converted to expected type
                 new BadRequestCase
                 {
                     Id = (long)1, Date = "2020-01-01",
                     Request = new Dictionary<string, object?> { ["id2"] = "notanumber" },
                     ExpectedInstance = "/Test/Post/1",
-                    ExpectedDetail = "Failed to read parameter \"TestPostRequest request\" from the request body as JSON. The JSON value could not be converted to System.Int64. Path: $.id2 | LineNumber: 0 | BytePositionInLine: 19."
+                    ExpectedDetail = "Failed to read parameter \"PostRequest request\" from the request body as JSON. The JSON value could not be converted to System.Int64. Path: $.id2 | LineNumber: 0 | BytePositionInLine: 19."
                 }
             };
         }
@@ -74,8 +73,7 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 
             //Then
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = problemDetails.GetTraceId();
-            TraceIdValidator.IsValid(traceId).Should().BeTrue();
+            var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
 
             var expected = new ProblemDetailsBuilder()
                 .WithTraceId(traceId)

@@ -23,17 +23,7 @@ namespace ApiClient.Endpoints
             return httpClient.GetAsync($"{BaseRoute}/GetOk");
         }
 
-        public Task<HttpResponseMessage> Get(long id)
-        {
-            return Get((object)id);
-        }
-
-        public Task<HttpResponseMessage> Get(object id)
-        {
-            return httpClient.GetAsync($"{BaseRoute}/Get/{id}");
-        }
-
-        public Task<HttpResponseMessage> Post(long id, DateTime date, TestPostRequest request)
+        public Task<HttpResponseMessage> Post(long id, DateTime date, PostRequest request)
         {
             return Post((object)id, date, request);
         }
