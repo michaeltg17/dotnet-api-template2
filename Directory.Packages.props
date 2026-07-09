@@ -7,6 +7,8 @@
     <PackageVersion Include="AutoFixture.Xunit3" Version="4.19.0" />
     <PackageVersion Include="AwesomeAssertions" Version="9.4.0" />
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
+    <PackageVersion Include="dbup-core" Version="6.1.1" />
+    <PackageVersion Include="dbup-sqlserver" Version="7.2.0" />
     <PackageVersion Include="EPPlus" Version="7.3.2" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
@@ -24,7 +26,6 @@
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
-    
     <PackageVersion Include="Microsoft.TestPlatform.TestHost" Version="18.7.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9" />
@@ -34,7 +35,6 @@
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
-    
     <PackageVersion Include="Serilog.Sinks.InMemory" Version="2.0.0" />
     <PackageVersion Include="Serilog.Sinks.InMemory.Assertions" Version="2.0.0" />
     <PackageVersion Include="Serilog.Sinks.Map" Version="2.0.0" />

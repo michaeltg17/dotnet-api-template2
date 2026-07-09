@@ -13,7 +13,4 @@
     <ProjectReference Include="..\CrossCutting\CrossCutting.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\Sql\*.sql" />
-  </ItemGroup>
 </Project>

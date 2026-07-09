@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<EmbeddedResource Include="scripts/**/*.sql" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="dbup-core" />
+	  <PackageReference Include="dbup-sqlserver" />
+	</ItemGroup>
+</Project>
