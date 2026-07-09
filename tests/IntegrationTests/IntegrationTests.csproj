@@ -29,6 +29,7 @@
 		<ProjectReference Include="..\..\src\Api\Api.csproj" />
 		<ProjectReference Include="..\..\src\Application\Application.csproj" />
 		<ProjectReference Include="..\..\src\Core\Core.csproj" />
+		<ProjectReference Include="..\..\src\Persistence.Migrations\Persistence.Migrations.csproj" />
 		<ProjectReference Include="..\Core.Testing\Core.Testing.csproj" />
 	</ItemGroup>
 

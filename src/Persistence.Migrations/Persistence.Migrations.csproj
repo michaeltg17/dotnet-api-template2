@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="scripts/**/*.sql" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Remove="Scripts\Database.sql" />
+		<EmbeddedResource Include="Scripts/*.sql" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="dbup-core" />

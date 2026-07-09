@@ -1,4 +1,5 @@
 ﻿using Core;
+using Persistence.Migrations;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using IntegrationTests.Settings;
@@ -37,7 +38,7 @@ namespace IntegrationTests.Infrastructure
             }
 
             WriteMessage("Running migrations.");
-            await RunMigrations(connectionString);
+            await RunMigrations(container.GetConnectionString());
 
             WriteMessage("Database initialized.");
             return new Database(testSettings, container) { ConnectionString = connectionString };
@@ -101,12 +102,7 @@ namespace IntegrationTests.Infrastructure
 
         static async Task RunMigrations(string connectionString)
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
-                .Options;
-
-            using var context = new AppDbContext(options);
-            await context.Database.MigrateAsync();
+            var result = Migrator.Migrate(connectionString);
         }
 
         void WriteMessage(string message) => messageSink.OnMessage(new DiagnosticMessage(message));
