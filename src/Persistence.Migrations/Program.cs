@@ -1,4 +1,5 @@
 using Persistence.Migrations;
 using Persistence.Migrations.Extensions;
 
-Migrator.Migrate("");
+string conn = Environment.GetEnvironmentVariable("SQL_SERVER_CONNECTION_STRING");
+Migrator.Migrate(conn);
