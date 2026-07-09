@@ -16,7 +16,6 @@ using IntegrationTests.Settings;
 using IntegrationTests.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Serilog.Sinks.XUnit.Injectable.Abstract;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests
 {

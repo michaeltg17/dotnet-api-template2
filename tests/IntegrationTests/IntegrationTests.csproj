@@ -9,10 +9,8 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
-		
 		<PackageReference Include="Microsoft.TestPlatform.TestHost" />
 		<PackageReference Include="MimeMapping" />
-		
 		<PackageReference Include="Serilog.Sinks.InMemory" />
 		<PackageReference Include="Serilog.Sinks.InMemory.Assertions" />
 		<PackageReference Include="Serilog.Sinks.Map" />
@@ -21,8 +19,8 @@
 		<PackageReference Include="Xunit.DependencyInjection" />
 		<PackageReference Include="xunit.v3" />
 		<PackageReference Include="xunit.runner.visualstudio">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
@@ -32,11 +30,9 @@
 		<ProjectReference Include="..\..\src\Application\Application.csproj" />
 		<ProjectReference Include="..\..\src\Core\Core.csproj" />
 		<ProjectReference Include="..\Core.Testing\Core.Testing.csproj" />
-		<ProjectReference Include="..\..\src\Persistence\Persistence.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		
 		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
