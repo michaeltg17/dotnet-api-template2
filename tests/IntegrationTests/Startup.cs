@@ -26,8 +26,8 @@ namespace IntegrationTests
         {
             var testSettings = new Dictionary<string, string?>
             {
-                {"KeepAliveDatabase", "true"},
-                {"EnableSqlLogging", "false"}
+                {"KeepAliveDatabase", "false"},
+                {"EnableSqlLogging", "true"}
             };
 
             builder.ConfigureHostConfiguration(builder => builder.AddInMemoryCollection(testSettings));
