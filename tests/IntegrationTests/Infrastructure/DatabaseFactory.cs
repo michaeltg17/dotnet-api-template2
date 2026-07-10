@@ -104,10 +104,9 @@ namespace IntegrationTests.Infrastructure
             Migrator.Migrate(connectionString);
         }
 
-        void WriteMessage(string message)
+        static void WriteMessage(string message)
         {
-            if (TestContext.Current is { } ctx)
-                ctx.SendDiagnosticMessage(message);
+            TestContext.Current.SendDiagnosticMessage(message);
         }
     }
 }
