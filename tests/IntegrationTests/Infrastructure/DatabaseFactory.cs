@@ -7,12 +7,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Testcontainers.MsSql;
-using Xunit.Sdk;
-using Xunit.v3;
+using Xunit;
 
 namespace IntegrationTests.Infrastructure
 {
-    internal class DatabaseFactory(IMessageSink messageSink, ITestSettings testSettings) : IFactory<Database>
+    internal class DatabaseFactory(ITestSettings testSettings) : IFactory<Database>
     {
         const string DatabaseName = "Database";
         const string ContainerName = "IntegrationTestsSqlServer";
@@ -105,6 +104,10 @@ namespace IntegrationTests.Infrastructure
             Migrator.Migrate(connectionString);
         }
 
-        void WriteMessage(string message) => messageSink.OnMessage(new DiagnosticMessage(message));
+        void WriteMessage(string message)
+        {
+            if (TestContext.Current is { } ctx)
+                ctx.SendDiagnosticMessage(message);
+        }
     }
 }

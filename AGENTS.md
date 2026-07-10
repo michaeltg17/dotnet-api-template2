@@ -231,3 +231,16 @@ CI runs via `ci-docker.sh` which builds `Dockerfile.ci` and mounts the Docker so
 - **No `Async` suffix** — don't name methods `RunAsync`, do `Run`. The `async` modifier on the method body is sufficient.
 - **Models over tuples** — use a proper response class instead of `Task<(int, string, string)>`
 - **No leading underscore** — name fields `inner`, `client`, `testKdbxPath`, not `_inner`, `_client`, `_testKdbxPath`
+
+## MCP Tools - ALWAYS PREFER
+
+When `mcp__vs-mcp__*` tools are available, ALWAYS use them instead of Grep/Glob/LS:
+
+| Instead of | Use |
+|------------|-----|
+| `Grep` for symbols | `FindSymbols`, `FindSymbolUsages` |
+| `LS` to explore projects | `GetSolutionTree` |
+| Reading files to find code | `FindSymbolDefinition` then `Read` |
+| Searching for method calls | `GetMethodCallers`, `GetMethodCalls` |
+
+**Why?** MCP tools use Roslyn semantic analysis - 10x faster, 90% fewer tokens.
