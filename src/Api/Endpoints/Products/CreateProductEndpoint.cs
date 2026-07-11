@@ -6,11 +6,13 @@ namespace Api.Endpoints.ProductEndpoints;
 
 internal static class CreateProductEndpoint
 {
-    public static void Map(IEndpointRouteBuilder group)
+    public static void Map(IEndpointRouteBuilder app)
     {
-        group.MapPost("/", static async ([FromBody] CreateProductRequest request, [FromServices] ProductService service) =>
+        app.MapPost("/", static async (
+            [FromBody] CreateProductRequest createProductRequest, 
+            [FromServices] ProductService productService) =>
         {
-            var product = await service.Create(request).ConfigureAwait(false);
+            var product = await productService.Create(createProductRequest).ConfigureAwait(false);
             return Results.Ok(product);
         });
     }

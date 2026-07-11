@@ -5,11 +5,11 @@ namespace Api.Endpoints.ProductEndpoints;
 
 internal static class GetAllProductsEndpoint
 {
-    public static void Map(IEndpointRouteBuilder group)
+    public static void Map(IEndpointRouteBuilder app)
     {
-        group.MapGet("/", static async ([FromServices] ProductService service) =>
+        app.MapGet("/", static async ([FromServices] ProductService productService) =>
         {
-            var products = await service.GetAll().ConfigureAwait(false);
+            var products = await productService.GetAll().ConfigureAwait(false);
             return Results.Ok(products);
         });
     }

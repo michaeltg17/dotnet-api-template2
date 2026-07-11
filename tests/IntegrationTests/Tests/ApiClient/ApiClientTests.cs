@@ -32,7 +32,7 @@ namespace IntegrationTests.Tests.ApiClient
                 }
                 """;
 
-            var func = response.To<ImageGroup>;
+            var func = response.To<Product>;
             await func.Should().ThrowAsync<ApiException>().WithMessage(expectedMessage);
         }
 

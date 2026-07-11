@@ -9,9 +9,7 @@ namespace Api.Endpoints.Test
             app.MapPost("ThrowInternalServerError", () =>
             {
                 throw new Exception("Sensitive data");
-            })
-            .WithTestName("ThrowInternalServerError")
-            .WithOpenApi();
+            });
         }
     }
 }

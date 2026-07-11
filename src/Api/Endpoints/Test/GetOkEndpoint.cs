@@ -10,9 +10,7 @@ namespace Api.Endpoints.Test
                 CancellationToken cancellationToken) =>
             {
                 return Task.CompletedTask;
-            })
-            .WithTestName("GetOk")
-            .WithOpenApi();
+            });
         }
     }
 }

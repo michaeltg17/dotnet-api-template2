@@ -6,14 +6,14 @@ namespace Api.Endpoints.ProductEndpoints;
 
 internal static class UpdateProductEndpoint
 {
-    public static void Map(IEndpointRouteBuilder group)
+    public static void Map(IEndpointRouteBuilder app)
     {
-        group.MapPut("/{id:long}", static async (
+        app.MapPut("/{id:long}", static async (
             long id,
-            [FromBody] UpdateProductRequest request,
-            [FromServices] ProductService service) =>
+            [FromBody] UpdateProductRequest updateProductRequest,
+            [FromServices] ProductService productService) =>
         {
-            var product = await service.Update(id, request).ConfigureAwait(false);
+            var product = await productService.Update(id, updateProductRequest).ConfigureAwait(false);
             return product is { } ? Results.Ok(product) : Results.NotFound();
         });
     }

@@ -5,11 +5,11 @@ namespace Api.Endpoints.ProductEndpoints;
 
 internal static class DeleteProductEndpoint
 {
-    public static void Map(IEndpointRouteBuilder group)
+    public static void Map(IEndpointRouteBuilder app)
     {
-        group.MapDelete("/{id:long}", static async (long id, [FromServices] ProductService service) =>
+        app.MapDelete("/{id:long}", static async (long id, [FromServices] ProductService productService) =>
         {
-            await service.Delete(id).ConfigureAwait(false);
+            await productService.Delete(id).ConfigureAwait(false);
             return Results.NoContent();
         });
     }
