@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Core.Testing\Core.Testing.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\" />
+  </ItemGroup>
+
 </Project>
