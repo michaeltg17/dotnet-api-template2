@@ -4,7 +4,7 @@ using Domain.Models;
 
 namespace Application.Services
 {
-    public class ProductService : IProductService
+    public class ProductService
     {
         private readonly ConcurrentDictionary<long, Product> products = new();
         private long nextId = 1;

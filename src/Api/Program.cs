@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-[assembly: ApiController]
-namespace Api
+﻿namespace Api
 {
     public class Program
     {

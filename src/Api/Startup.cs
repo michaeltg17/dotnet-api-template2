@@ -4,7 +4,6 @@ using Serilog;
 using System.Text.Json.Serialization;
 using Api.Extensions;
 using Application;
-using Asp.Versioning;
 
 namespace Api
 {
@@ -30,29 +29,9 @@ namespace Api
 
             builder.Services
                 .AddMainDependencies()
-                .AddProblemDetails()
-                .AddVersioning();
+                .AddProblemDetails();
 
             return builder;
-        }
-
-        static IServiceCollection AddVersioning(this IServiceCollection services)
-        {
-            return services
-                .AddApiVersioning(options =>
-                {
-                    options.ReportApiVersions = true;
-                    options.DefaultApiVersion = new ApiVersion(1);
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
-                })
-                .AddMvc()
-                .AddApiExplorer(options =>
-                {
-                    options.GroupNameFormat = "'v'V";
-                    options.SubstituteApiVersionInUrl = true;
-                })
-                .Services;
         }
 
         static IServiceCollection AddMainDependencies(this IServiceCollection services)
@@ -86,11 +65,9 @@ namespace Api
         static WebApplication Configure(this WebApplication app)
         {
             //Exception middleware first to catch exceptions
-            app.UseExceptionHandler().UseStatusCodePages();
+            app.UseExceptionHandler();
 
             app.MapEndpoints();
-
-            app.LogEndpoints();
 
             return app;
         }

@@ -8,12 +8,7 @@ namespace Persistence
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options, IApiSettings apiSettings) : DbContext(options)
     {
-        public virtual DbSet<Image> Images { get; set; }
-        public virtual DbSet<ImageGroup> ImageGroups { get; set; }
-        public virtual DbSet<ImageType> ImageTypes { get; set; }
-        public virtual DbSet<ImageResolution> ImageResolutions { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<ImageFileExtension> ImageFileExtensions { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

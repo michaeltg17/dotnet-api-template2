@@ -9,48 +9,44 @@ namespace ApiClient
 
         string BuildBasePath(int version = 1) => $"/api/v{version}";
 
-        public Task<HttpResponseMessage> GetImage(long id)
+        public Task<HttpResponseMessage> GetAllProducts()
         {
-            return GetImage((object)id);
+            return httpClient.GetAsync($"{BuildBasePath()}/Products");
         }
 
-        public Task<HttpResponseMessage> GetImage(object id)
+        public Task<HttpResponseMessage> GetProduct(long id)
         {
-            return httpClient.GetAsync($"{BuildBasePath()}/Image/{id}");
+            return GetProduct((object)id);
         }
 
-        public Task<HttpResponseMessage> GetImageGroup(long id)
+        public Task<HttpResponseMessage> GetProduct(object id)
         {
-            return GetImageGroup((object)id);
+            return httpClient.GetAsync($"{BuildBasePath()}/Products/{id}");
         }
 
-        public Task<HttpResponseMessage> GetImageGroup(object id)
+        public Task<HttpResponseMessage> CreateProduct(HttpContent? httpContent)
         {
-            return httpClient.GetAsync($"{BuildBasePath()}/ImageGroup/{id}")!;
+            return httpClient.PostAsync($"{BuildBasePath()}/Products", httpContent);
         }
 
-        public Task<HttpResponseMessage> SaveImageGroup(HttpContent? httpContent)
+        public Task<HttpResponseMessage> UpdateProduct(long id, HttpContent? httpContent)
         {
-            return httpClient.PostAsync($"{BuildBasePath()}/ImageGroup", httpContent);
+            return UpdateProduct((object)id, httpContent);
         }
 
-        public Task<HttpResponseMessage> SaveImageGroup(string imagePath)
+        public Task<HttpResponseMessage> UpdateProduct(object id, HttpContent? httpContent)
         {
-            var multipartContent = new MultipartFormDataContent();
-            var byteArrayContent = new ByteArrayContent(File.ReadAllBytes(imagePath));
-            multipartContent.Add(byteArrayContent, "file", Path.GetFileName(imagePath));
-
-            return SaveImageGroup(multipartContent);
+            return httpClient.PutAsync($"{BuildBasePath()}/Products/{id}", httpContent);
         }
 
-        public Task<HttpResponseMessage> DeleteImageGroup(long id, int version = 1)
+        public Task<HttpResponseMessage> DeleteProduct(long id)
         {
-            return DeleteImageGroup((object)id, version);
+            return DeleteProduct((object)id);
         }
 
-        public Task<HttpResponseMessage> DeleteImageGroup(object id, int version = 1)
+        public Task<HttpResponseMessage> DeleteProduct(object id)
         {
-            return httpClient.DeleteAsync($"{BuildBasePath(version)}/ImageGroup/{id}");
+            return httpClient.DeleteAsync($"{BuildBasePath()}/Products/{id}");
         }
 
         public Task<HttpResponseMessage> Export(string tableName)

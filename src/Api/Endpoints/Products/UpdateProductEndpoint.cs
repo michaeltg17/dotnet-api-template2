@@ -11,7 +11,7 @@ internal static class UpdateProductEndpoint
         group.MapPut("/{id:long}", static async (
             long id,
             [FromBody] UpdateProductRequest request,
-            [FromServices] IProductService service) =>
+            [FromServices] ProductService service) =>
         {
             var product = await service.Update(id, request).ConfigureAwait(false);
             return product is { } ? Results.Ok(product) : Results.NotFound();
