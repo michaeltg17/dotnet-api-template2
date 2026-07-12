@@ -32,7 +32,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 })
                 .Build();
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
             product.Id.Should().BeGreaterThan(0);
             product.Should().BeEquivalentTo(expected);
 

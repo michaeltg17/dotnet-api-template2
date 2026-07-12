@@ -18,7 +18,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //Given
             var product = new ProductBuilder().Build();
-            Context.Products.Add(product);
+            await Context.Products.AddAsync(product);
             await Context.SaveChangesAsync();
 
             //When

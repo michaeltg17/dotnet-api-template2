@@ -23,7 +23,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 })
                 .Build();
 
-            Context.Products.Add(product);
+            await Context.Products.AddAsync(product);
             await Context.SaveChangesAsync();
 
             var response = await ApiClient.GetProduct(product.Id);

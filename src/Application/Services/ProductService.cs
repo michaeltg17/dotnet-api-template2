@@ -33,7 +33,7 @@ namespace Application.Services
                 Description = request.Description,
                 Price = request.Price,
             };
-            context.Products.Add(product);
+            await context.Products.AddAsync(product).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
             return product;
         }

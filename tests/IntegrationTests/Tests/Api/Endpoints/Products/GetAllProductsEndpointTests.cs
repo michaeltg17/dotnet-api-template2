@@ -11,7 +11,24 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
     public class GetAllProductsEndpointTests : Test
     {
         [Fact]
-        public async Task EmptyList_ReturnsOk()
+        public async Task GetProductsOk()
+        {
+            //Given
+            IEnumerable<Product> expectedProducts = [new ProductBuilder().Build(), new ProductBuilder().Build()];
+            await Context.Products.AddRangeAsync(expectedProducts);
+            await Context.SaveChangesAsync();
+
+            //When
+            var response = await ApiClient.GetAllProducts();
+
+            //Then
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var products = await response.To<List<Product>>();
+            products.Should().BeEquivalentTo(expectedProducts);
+        }
+
+        [Fact]
+        public async Task NoProducts_ReturnsOk()
         {
             //When
             var response = await ApiClient.GetAllProducts();
@@ -20,25 +37,6 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var products = await response.To<List<Product>>();
             products.Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task GetProductsOk()
-        {
-            //Given
-            IEnumerable<Product> products = [new ProductBuilder().Build(), new ProductBuilder().Build()];
-            Context.Products.AddRange(products);
-            await Context.SaveChangesAsync();
-
-            var response = await ApiClient.GetAllProducts();
-            var products = await response.To<List<Product>>();
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            var actual = products[0];
-            actual.Name.Should().Be(expected.Name);
-            actual.Description.Should().Be(expected.Description);
-            actual.Price.Should().Be(expected.Price);
         }
     }
 }

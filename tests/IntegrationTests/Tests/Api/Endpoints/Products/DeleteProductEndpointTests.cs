@@ -16,7 +16,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //Given
             var product = new ProductBuilder().Build();
-            Context.Products.Add(product);
+            await Context.Products.AddAsync(product);
             await Context.SaveChangesAsync();
 
             //When
@@ -33,10 +33,10 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         public async Task NonExistentProduct_ExpectedProblemDetails()
         {
             //When
-            var response = await ApiClient.DeleteProduct(long.MaxValue);
+            var response = await ApiClient.DeleteProduct(1);
 
             //Then
-            await ProblemDetailsValidator.ValidateNotFoundException<Product>(response!, long.MaxValue);
+            await ProblemDetailsValidator.ValidateNotFoundException(response!, "Product", "Products", 1);
         }
     }
 }
