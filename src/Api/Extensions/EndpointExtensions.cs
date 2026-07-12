@@ -1,6 +1,6 @@
 ﻿using Api.Endpoints.Test;
-using Api.Endpoints.ProductEndpoints;
 using Api.Endpoints;
+using Api.Endpoints.Products;
 
 namespace Api.Extensions;
 

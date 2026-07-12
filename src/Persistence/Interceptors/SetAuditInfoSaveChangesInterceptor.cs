@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Core.Extensions;
 using Core.Domain;
 
-namespace Persistance.Interceptors
+namespace Persistence.Interceptors
 {
     public class SetAuditInfoSaveChangesInterceptor : SaveChangesInterceptor
     {

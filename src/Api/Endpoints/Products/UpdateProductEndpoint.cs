@@ -2,7 +2,7 @@ using Application.Services;
 using Application.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Endpoints.ProductEndpoints;
+namespace Api.Endpoints.Products;
 
 internal static class UpdateProductEndpoint
 {

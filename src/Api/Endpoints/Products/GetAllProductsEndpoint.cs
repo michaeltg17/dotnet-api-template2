@@ -1,7 +1,7 @@
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Endpoints.ProductEndpoints;
+namespace Api.Endpoints.Products;
 
 internal static class GetAllProductsEndpoint
 {
