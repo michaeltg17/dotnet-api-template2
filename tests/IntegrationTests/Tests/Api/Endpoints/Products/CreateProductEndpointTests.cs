@@ -18,10 +18,10 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //When
             var request = new CreateProductRequest("New Product", "A description", 9.99m);
-            var response = await ApiClient.CreateProduct(JsonContent.Create(request));
+            var response = await ApiClient.CreateProduct(request);
             var product = await response.To<Product>();
 
-            //Then
+            //Then: retuns expected product
             var expected = new ProductBuilder()
                 .WithValues(p =>
                 {
@@ -35,42 +35,14 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             product.Id.Should().BeGreaterThan(0);
             product.Should().BeEquivalentTo(expected);
-        }
 
-        [Fact]
-        public async Task ValidRequest_AutoAssignsId()
-        {
-            var request = new CreateProductRequest("Id Product", "Desc", 1m);
-            var response = await ApiClient.CreateProduct(JsonContent.Create(request));
-            var product = await response.To<Product>();
-
-            product.Id.Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        public async Task ValidRequest_PersistedInDatabase()
-        {
-            var request = new CreateProductRequest("Persisted", "Persisted desc", 5.50m);
-            var response = await ApiClient.CreateProduct(JsonContent.Create(request));
-            var product = await response.To<Product>();
-
+            //Then: expected product in db
             var dbProduct = await Context.Products.FindAsync(product.Id);
-
-            var expected = new ProductBuilder()
-                .WithValues(p =>
-                {
-                    p.Id = product.Id;
-                    p.Name = request.Name;
-                    p.Description = request.Description;
-                    p.Price = request.Price;
-                })
-                .Build();
-
             dbProduct.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public async Task NoBody_ReturnsBadRequest()
+        public async Task InvalidRequest_ExpectedProblemDetails()
         {
             var response = await ApiClient.CreateProduct(null);
 

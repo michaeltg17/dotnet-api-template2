@@ -26,19 +26,19 @@ namespace ApiClient
             return httpClient.GetAsync($"{BuildBasePath()}/Products/{id}");
         }
 
-        public Task<HttpResponseMessage> CreateProduct(HttpContent? httpContent)
+        public Task<HttpResponseMessage> CreateProduct(CreateProductRequest request)
         {
-            return httpClient.PostAsync($"{BuildBasePath()}/Products", httpContent);
+            return httpClient.PostAsJsonAsync($"{BuildBasePath()}/Products", request);
         }
 
-        public Task<HttpResponseMessage> UpdateProduct(long id, HttpContent? httpContent)
+        public Task<HttpResponseMessage> UpdateProduct(long id, UpdateProductRequest request)
         {
-            return UpdateProduct((object)id, httpContent);
+            return UpdateProduct((object)id, request);
         }
 
-        public Task<HttpResponseMessage> UpdateProduct(object id, HttpContent? httpContent)
+        public Task<HttpResponseMessage> UpdateProduct(object id, UpdateProductRequest request)
         {
-            return httpClient.PutAsync($"{BuildBasePath()}/Products/{id}", httpContent);
+            return httpClient.PutAsJsonAsync($"{BuildBasePath()}/Products/{id}", request);
         }
 
         public Task<HttpResponseMessage> DeleteProduct(long id)

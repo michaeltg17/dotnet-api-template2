@@ -11,7 +11,7 @@ using Xunit;
 
 namespace IntegrationTests.Infrastructure
 {
-    internal class DatabaseFactory(ITestSettings testSettings) : IFactory<Database>
+    internal class DatabaseFactory(ITestSettings testSettings)
     {
         const string DatabaseName = "Database";
         const string ContainerName = "IntegrationTestsSqlServer";

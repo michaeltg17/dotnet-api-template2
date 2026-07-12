@@ -1,56 +1,9 @@
-CREATE TABLE Users
-(
-    Id BIGINT IDENTITY(1,1) NOT NULL,
-    [Guid] UNIQUEIDENTIFIER NOT NULL DEFAULT(NEWID()),
-    [Name] NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(50) NOT NULL,
-
-    CreatedBy BIGINT NOT NULL,
-    CreatedOn DATETIME2(0) NOT NULL,
-    ModifiedBy BIGINT NULL,
-    ModifiedOn DATETIME2(0) NULL,
-
-    CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (Id ASC),
-    CONSTRAINT UQ_Users_Guid UNIQUE ([Guid] ASC)
-);
-GO
-
-SET IDENTITY_INSERT Users ON;
-INSERT INTO Users ([Id], [Name], Email, CreatedBy, CreatedOn)
-VALUES (1, 'System', 'system@system.com', 1, GETDATE());
-SET IDENTITY_INSERT Users OFF;
-GO
-
-ALTER TABLE Users
-    ADD CONSTRAINT FK_Users_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Users (Id);
-GO
-
-ALTER TABLE Users
-    ADD CONSTRAINT FK_Users_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES Users (Id);
-GO
-
 CREATE TABLE Products
 (
     Id BIGINT IDENTITY(1,1) NOT NULL,
-    [Guid] UNIQUEIDENTIFIER NOT NULL DEFAULT(NEWID()),
     [Name] NVARCHAR(200) NOT NULL,
     [Description] NVARCHAR(1000) NOT NULL,
-    [Price] DECIMAL(18,2) NOT NULL,
+    Price DECIMAL(18,2) NOT NULL,
 
-    CreatedBy BIGINT NOT NULL,
-    CreatedOn DATETIME2(0) NOT NULL,
-    ModifiedBy BIGINT NULL,
-    ModifiedOn DATETIME2(0) NULL,
-
-    CONSTRAINT PK_Products PRIMARY KEY CLUSTERED (Id ASC),
-    CONSTRAINT UQ_Products_Guid UNIQUE ([Guid] ASC)
+    CONSTRAINT PK_Products PRIMARY KEY CLUSTERED (Id ASC)
 );
-GO
-
-ALTER TABLE Products
-    ADD CONSTRAINT FK_Products_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Users (Id);
-GO
-
-ALTER TABLE Products
-    ADD CONSTRAINT FK_Products_ModifiedBy FOREIGN KEY (ModifiedBy) REFERENCES Users (Id);
-GO

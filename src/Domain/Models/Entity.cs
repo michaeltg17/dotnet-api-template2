@@ -1,14 +1,7 @@
-﻿using Core.Domain;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
-    public record Entity : IIdentifiable, IGloballyIdentifiable, IAudited
+    public abstract record Entity
     {
         public long Id { get; set; }
-        public Guid Guid { get; set; }
-        public long CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public long? ModifiedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
     }
 }

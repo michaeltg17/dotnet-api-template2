@@ -23,7 +23,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
 
             //When
             var request = new UpdateProductRequest("Updated", "Updated desc", 20.50m);
-            var response = await ApiClient.UpdateProduct(product.Id, JsonContent.Create(request));
+            var response = await ApiClient.UpdateProduct(product.Id, request);
             var updatedProduct = await response.To<Product>();
 
             //Then
@@ -47,7 +47,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         public async Task NonExistentProduct_ExpectedProblemDetails()
         {
             var request = new UpdateProductRequest("Updated", "Desc", 10m);
-            var response = await ApiClient.UpdateProduct(long.MaxValue, JsonContent.Create(request));
+            var response = await ApiClient.UpdateProduct(long.MaxValue, request);
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
