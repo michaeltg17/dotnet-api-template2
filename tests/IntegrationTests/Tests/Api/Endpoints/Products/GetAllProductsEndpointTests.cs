@@ -13,26 +13,21 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         [Fact]
         public async Task EmptyList_ReturnsOk()
         {
+            //When
             var response = await ApiClient.GetAllProducts();
 
+            //Then
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var products = await response.To<List<Product>>();
             products.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task WithProduct_ReturnsInOrder()
+        public async Task GetProductsOk()
         {
-            var expected = new ProductBuilder()
-                .WithValues(p =>
-                {
-                    p.Name = "First";
-                    p.Description = "First desc";
-                    p.Price = 10m;
-                })
-                .Build();
-
-            Context.Products.Add(expected);
+            //Given
+            IEnumerable<Product> products = [new ProductBuilder().Build(), new ProductBuilder().Build()];
+            Context.Products.AddRange(products);
             await Context.SaveChangesAsync();
 
             var response = await ApiClient.GetAllProducts();

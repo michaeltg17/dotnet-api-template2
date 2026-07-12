@@ -13,7 +13,7 @@ internal static class CreateProductEndpoint
             [FromServices] ProductService productService) =>
         {
             var product = await productService.Create(createProductRequest).ConfigureAwait(false);
-            return Results.Ok(product);
+            return Results.Created($"products/{product.Id}", product);
         });
     }
 }

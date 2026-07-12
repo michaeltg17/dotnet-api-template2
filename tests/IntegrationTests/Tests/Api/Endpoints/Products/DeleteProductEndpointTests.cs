@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Core.Testing.Builders;
+using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -23,6 +24,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
 
             //Then
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            Context.ChangeTracker.Clear();
             var dbProduct = await Context.Products.FindAsync(product.Id);
             dbProduct.Should().BeNull();
         }
@@ -30,8 +32,11 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         [Fact]
         public async Task NonExistentProduct_ExpectedProblemDetails()
         {
+            //When
             var response = await ApiClient.DeleteProduct(long.MaxValue);
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            //Then
+            await ProblemDetailsValidator.ValidateNotFoundException<Product>(response!, long.MaxValue);
         }
     }
 }

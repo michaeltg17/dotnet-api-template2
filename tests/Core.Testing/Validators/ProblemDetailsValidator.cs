@@ -4,6 +4,7 @@ using Core.Testing.Extensions;
 using AwesomeAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Domain.Models;
 
 namespace Core.Testing.Validators
 {
@@ -16,14 +17,14 @@ namespace Core.Testing.Validators
             return traceId;
         }
 
-        public static async Task ValidateNotFoundException(HttpResponseMessage response, string entity, long id)
+        public static async Task ValidateNotFoundException<T>(HttpResponseMessage response, long id) where T : Entity
         {
             var problemDetails = await response.To<ProblemDetails>();
             var traceId = ValidateTraceId(problemDetails);
 
             var expected = new ProblemDetailsBuilder()
                 .WithTraceId(traceId)
-                .WithNotFoundException(entity, id)
+                .WithNotFoundException<T>(id)
                 .Build();
 
             problemDetails.Should().BeEquivalentTo(expected);

@@ -20,7 +20,6 @@ namespace Application.Services
         public async Task<IEnumerable<Product>> GetAll()
         {
             return await context.Products
-                .OrderBy(p => p.Id)
                 .ToListAsync()
                 .ConfigureAwait(false);
         }

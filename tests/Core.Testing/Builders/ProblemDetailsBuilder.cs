@@ -1,4 +1,5 @@
 ﻿using Core.Builders;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -23,13 +24,13 @@ namespace Core.Testing.Builders
             return this;
         }
 
-        public ProblemDetailsBuilder WithNotFoundException(string entity, long id)
+        public ProblemDetailsBuilder WithNotFoundException<T>(long id) where T : Entity
         {
             Item.Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5";
             Item.Title = "NotFoundException";
             Item.Status = (int)HttpStatusCode.NotFound;
-            Item.Detail = $"{entity} with id '{id}' was not found.";
-            Item.Instance = $"/api/v1/{entity}/{id}";
+            Item.Detail = $"{nameof(T)} with id '{id}' was not found.";
+            Item.Instance = $"/api/v1/{nameof(T)}/{id}";
 
             return this;
         }
