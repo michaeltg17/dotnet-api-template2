@@ -21,8 +21,6 @@ namespace Api
 
         static WebApplicationBuilder AddDependencies(this WebApplicationBuilder builder)
         {
-            builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-                options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
 
             builder.AddSerilog();

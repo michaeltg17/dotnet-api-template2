@@ -1,5 +1,4 @@
-﻿using Asp.Versioning;
-using Api.Endpoints.Test;
+﻿using Api.Endpoints.Test;
 using Api.Endpoints.ProductEndpoints;
 using Api.Endpoints;
 
