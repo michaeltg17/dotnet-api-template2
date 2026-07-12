@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
-namespace IntegrationTests.Tests.Api.ProductEndpoints
+namespace IntegrationTests.Tests.Api.Endpoints.ProductEndpoints
 {
     [Collection(nameof(ApiCollection))]
     public class UpdateProductTests : Test

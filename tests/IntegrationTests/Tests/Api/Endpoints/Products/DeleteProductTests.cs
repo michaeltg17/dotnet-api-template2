@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Xunit;
 
-namespace IntegrationTests.Tests.Api.ProductEndpoints
+namespace IntegrationTests.Tests.Api.Endpoints.ProductEndpoints
 {
     [Collection(nameof(ApiCollection))]
     public class DeleteProductTests : Test
