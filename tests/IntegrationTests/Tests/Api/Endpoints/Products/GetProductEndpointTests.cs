@@ -1,6 +1,7 @@
 using ApiClient.Extensions;
 using AwesomeAssertions;
 using Core.Testing.Builders;
+using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -9,21 +10,21 @@ using Xunit;
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
     [Collection(nameof(ApiCollection))]
-    public class GetProductEndpointTests : Test
+    public class GetProductEndpointTests : ProductsTest
     {
         [Fact]
-        public async Task ExistingProduct_ReturnsOk()
+        public async Task GetProductOk()
         {
-            var product = new ProductBuilder().Build();
+            //Given
+            var request = new CreateProductRequestBuilder().Build();
+            var product = await ApiClient.CreateProduct(request).To<Product>();
 
-            await Context.Products.AddAsync(product);
-            await Context.SaveChangesAsync();
-
+            //When
             var response = await ApiClient.GetProduct(product.Id);
-            var result = await response.To<Product>();
 
+            //Then
+            var result = await response.To<Product>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Id.Should().BeGreaterThan(0);
 
             var expected = new ProductBuilder()
                 .WithValues(p =>
@@ -35,15 +36,18 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 })
                 .Build();
 
+            result.Id.Should().BeGreaterThan(0);
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public async Task NonExistentProduct_ReturnsNotFound()
+        public async Task NoProduct_ExpectedProblemDetails()
         {
-            var response = await ApiClient.GetProduct(long.MaxValue);
+            //When
+            var response = await ApiClient.GetProduct(1);
 
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            //Then
+            await ProblemDetailsValidator.ValidateNotFoundException(response, "Product", "Products", 1);
         }
     }
 }

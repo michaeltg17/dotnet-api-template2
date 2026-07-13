@@ -1,3 +1,4 @@
+using ApiClient.Extensions;
 using AwesomeAssertions;
 using Core.Testing.Builders;
 using Core.Testing.Validators;
@@ -9,24 +10,19 @@ using Xunit;
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
     [Collection(nameof(ApiCollection))]
-    public class DeleteProductEndpointTests : Test
+    public class DeleteProductEndpointTests : ProductsTest
     {
         [Fact]
         public async Task DeleteOk()
         {
-            //Given
-            var product = new ProductBuilder().Build();
-            await Context.Products.AddAsync(product);
-            await Context.SaveChangesAsync();
-
             //When
-            var response = await ApiClient.DeleteProduct(product.Id);
+            var response = await ApiClient.DeleteProduct(initialProducts[1].Id);
 
             //Then
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-            Context.ChangeTracker.Clear();
-            var dbProduct = await Context.Products.FindAsync(product.Id);
+            var dbProduct = await Context.Products.FindAsync(initialProducts[1].Id);
             dbProduct.Should().BeNull();
+            await ValidateInitialProductsAreTheSame([initialProducts[1].Id]);
         }
 
         [Fact]

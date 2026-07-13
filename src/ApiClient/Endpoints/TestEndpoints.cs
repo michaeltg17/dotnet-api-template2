@@ -8,11 +8,6 @@ namespace ApiClient.Endpoints
     {
         const string BaseRoute = "/Test";
 
-        public Task<HttpResponseMessage> DeleteAllTestEntities()
-        {
-            return httpClient.DeleteAsync($"{BaseRoute}/DeleteAllTestEntities");
-        }
-
         public Task<HttpResponseMessage> ThrowInternalServerError()
         {
             return httpClient.PostAsync($"{BaseRoute}/ThrowInternalServerError", null);

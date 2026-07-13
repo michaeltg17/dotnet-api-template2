@@ -1,12 +1,12 @@
 ﻿using ApiClient.Endpoints;
 using Application.Models.Requests;
+using Domain.Models;
 using System.Net.Http.Json;
 
 namespace ApiClient
 {
     public class ApiClient(HttpClient httpClient)
     {
-        public HttpClient HttpClient { get; } = httpClient;
         public TestEndpoints Test { get; } = new(httpClient);
 
         string BuildBasePath() => "/api";

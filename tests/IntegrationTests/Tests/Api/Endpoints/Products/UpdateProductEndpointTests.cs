@@ -11,18 +11,17 @@ using Xunit;
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
     [Collection(nameof(ApiCollection))]
-    public class UpdateProductEndpointTests : Test
+    public class UpdateProductEndpointTests : ProductsTest
     {
         [Fact]
         public async Task UpdatesProductOk()
         {
             //Given
-            var product = new ProductBuilder().Build();
-            await Context.Products.AddAsync(product);
-            await Context.SaveChangesAsync();
+            var createProductRequest = new CreateProductRequestBuilder().Build();
+            var product = await ApiClient.CreateProduct(createProductRequest).To<Product>();
 
             //When
-            var request = new UpdateProductRequest("Updated", "Updated desc", 20.50m);
+            var request = new UpdateProductRequestBuilder().Build();
             var response = await ApiClient.UpdateProduct(product.Id, request);
             var updatedProduct = await response.To<Product>();
 
@@ -44,10 +43,10 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         }
 
         [Fact]
-        public async Task NonExistentProduct_ExpectedProblemDetails()
+        public async Task NoProduct_ExpectedProblemDetails()
         {
             //When
-            var request = new UpdateProductRequest("Updated", "Desc", 10m);
+            var request = new UpdateProductRequestBuilder().Build();
             var response = await ApiClient.UpdateProduct(long.MaxValue, request);
 
             //Then

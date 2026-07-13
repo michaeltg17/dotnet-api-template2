@@ -16,7 +16,7 @@ namespace IntegrationTests
         protected AppDbContext Context { get; set; } = default!;
         AsyncServiceScope Scope { get; set; } = default!;
 
-        public void Initialize()
+        public virtual ValueTask Initialize()
         {
             WebApplicationFactoryFixture.InjectableTestOutputSink.Inject(TestOutputHelper);
             WebApplicationFactoryFixture.InMemorySink = new InMemorySink();
@@ -24,6 +24,7 @@ namespace IntegrationTests
 
             Scope = WebApplicationFactoryFixture.Services.CreateAsyncScope();
             Context = Scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            return ValueTask.CompletedTask;
         }
 
         Task<int> DeleteEntitiesFromDb()
