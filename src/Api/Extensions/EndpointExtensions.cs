@@ -13,7 +13,7 @@ public static class EndpointExtensions
         GetProductEndpoint.Map(products);
         CreateProductEndpoint.Map(products);
         UpdateProductEndpoint.Map(products);
-        DeleteProductEndpoint.Map(products);
+        DeleteProductsEndpoint.Map(products);
 
         var test = app.MapGroup("Test");
         GetOkEndpoint.Map(test);

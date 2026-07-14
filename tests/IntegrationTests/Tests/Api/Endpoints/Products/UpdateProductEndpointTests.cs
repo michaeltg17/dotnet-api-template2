@@ -17,8 +17,8 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         public async Task UpdatesProductOk()
         {
             //Given
-            var createProductRequest = new CreateProductRequestBuilder().Build();
-            var product = await ApiClient.CreateProduct(createProductRequest).To<Product>();
+            await CreateProducts();
+            var product = initialProducts[1];
 
             //When
             var request = new UpdateProductRequestBuilder().Build();

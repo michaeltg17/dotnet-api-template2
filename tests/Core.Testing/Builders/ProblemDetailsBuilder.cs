@@ -28,8 +28,9 @@ namespace Core.Testing.Builders
             Item.Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5";
             Item.Title = "NotFoundException";
             Item.Status = (int)HttpStatusCode.NotFound;
-            Item.Detail = $"{entity} with id '{id}' was not found.";
+            Item.Detail = $"The following ids '{id}' were not found for entity '{entity}'.";
             Item.Instance = $"/api/{route}/{id}";
+            Item.Extensions["NotFoundIds"] = new[] { id };
 
             return this;
         }

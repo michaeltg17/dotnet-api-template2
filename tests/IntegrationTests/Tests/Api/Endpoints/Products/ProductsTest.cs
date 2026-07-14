@@ -13,13 +13,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
     {
         public List<Product> initialProducts = new();
 
-        public override async ValueTask Initialize()
-        {
-            await base.Initialize();
-            await CreateProducts();
-        }
-
-        async ValueTask CreateProducts()
+        public async ValueTask CreateProducts()
         {
             var request = new CreateProductRequestBuilder().Build();
             var tasks = new[]

@@ -13,6 +13,9 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         [Fact]
         public async Task GetProductsOk()
         {
+            //Given
+            await CreateProducts();
+
             //When
             var response = await ApiClient.GetAllProducts();
 

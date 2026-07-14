@@ -16,6 +16,9 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         [Fact]
         public async Task CreateProductOk()
         {
+            //Given
+            await CreateProducts();
+
             //When
             var request = new CreateProductRequestBuilder().Build();
             var response = await ApiClient.CreateProduct(request);

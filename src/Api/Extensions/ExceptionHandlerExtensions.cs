@@ -56,6 +56,9 @@ namespace Api.Extensions
                 Extensions = new Dictionary<string, object?>()
             };
 
+            if (exception is NotFoundException notFound)
+                problemDetails.Extensions["NotFoundIds"] = notFound.IdsNotFound;
+
             return new ProblemDetailsContext
             {
                 Exception = isInternalServerError ? null : exception,

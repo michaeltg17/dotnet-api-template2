@@ -1,6 +1,7 @@
-﻿namespace Application.Exceptions
+namespace Application.Exceptions;
+
+public class NotFoundException(string entityName, long[] ids)
+    : AppException($"The following ids '{string.Join(", ", ids)}' were not found for entity '{entityName}'.")
 {
-    public class NotFoundException(string entityName, long id) : AppException($"{entityName} with id '{id}' was not found.")
-    {
-    }
+    public IEnumerable<long> IdsNotFound { get; } = ids;
 }

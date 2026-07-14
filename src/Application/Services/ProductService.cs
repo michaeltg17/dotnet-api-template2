@@ -1,5 +1,6 @@
 using Application.Exceptions;
 using Application.Models.Requests;
+using Application.Models.Responses;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -12,7 +13,7 @@ namespace Application.Services
         {
             var product = await context.Products.FindAsync(id).ConfigureAwait(false);
             if (product is null)
-                throw new NotFoundException<Product>(id);
+                throw new NotFoundException<Product>([id]);
 
             return product;
         }
@@ -43,7 +44,7 @@ namespace Application.Services
             ArgumentNullException.ThrowIfNull(request);
             var product = await context.Products.FindAsync(id).ConfigureAwait(false);
             if (product is null)
-                throw new NotFoundException<Product>(id);
+                throw new NotFoundException<Product>([id]);
 
             product.Name = request.Name;
             product.Description = request.Description;
@@ -52,14 +53,26 @@ namespace Application.Services
             return product;
         }
 
-        public async Task Delete(long id)
+        public async Task<DeleteProductsResponse> Delete(DeleteProductsRequest request)
         {
-            var product = await context.Products.FindAsync(id).ConfigureAwait(false);
-            if (product is null)
-                throw new NotFoundException<Product>(id);
+            var products = await context.Products
+                .Where(p => request.Ids.Contains(p.Id))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-            context.Products.Remove(product);
-            await context.SaveChangesAsync().ConfigureAwait(false);
+            var foundIds = products.Select(p => p.Id).ToHashSet();
+            var notFoundIds = request.Ids.Except(foundIds).ToArray();
+
+            if (!request.IgnoreNotFound && notFoundIds.Length > 0)
+                throw new NotFoundException<Product>(notFoundIds);
+
+            if (products.Count > 0)
+            {
+                context.Products.RemoveRange(products);
+                await context.SaveChangesAsync().ConfigureAwait(false);
+            }
+
+            return new DeleteProductsResponse([.. foundIds], notFoundIds);
         }
     }
 }

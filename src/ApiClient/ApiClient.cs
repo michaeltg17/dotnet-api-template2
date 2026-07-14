@@ -1,7 +1,6 @@
-﻿using ApiClient.Endpoints;
-using Application.Models.Requests;
-using Domain.Models;
+﻿using Application.Models.Requests;
 using System.Net.Http.Json;
+using ApiClient.Endpoints;
 
 namespace ApiClient
 {
@@ -9,11 +8,11 @@ namespace ApiClient
     {
         public TestEndpoints Test { get; } = new(httpClient);
 
-        string BuildBasePath() => "/api";
+        const string BasePath = "/api";
 
         public Task<HttpResponseMessage> GetAllProducts()
         {
-            return httpClient.GetAsync($"{BuildBasePath()}/Products");
+            return httpClient.GetAsync($"{BasePath}/Products");
         }
 
         public Task<HttpResponseMessage> GetProduct(long id)
@@ -23,12 +22,12 @@ namespace ApiClient
 
         public Task<HttpResponseMessage> GetProduct(object id)
         {
-            return httpClient.GetAsync($"{BuildBasePath()}/Products/{id}");
+            return httpClient.GetAsync($"{BasePath}/Products/{id}");
         }
 
         public Task<HttpResponseMessage> CreateProduct(CreateProductRequest request)
         {
-            return httpClient.PostAsJsonAsync($"{BuildBasePath()}/Products", request);
+            return httpClient.PostAsJsonAsync($"{BasePath}/Products", request);
         }
 
         public Task<HttpResponseMessage> UpdateProduct(long id, UpdateProductRequest request)
@@ -38,22 +37,16 @@ namespace ApiClient
 
         public Task<HttpResponseMessage> UpdateProduct(object id, UpdateProductRequest request)
         {
-            return httpClient.PutAsJsonAsync($"{BuildBasePath()}/Products/{id}", request);
+            return httpClient.PutAsJsonAsync($"{BasePath}/Products/{id}", request);
         }
 
-        public Task<HttpResponseMessage> DeleteProduct(long id)
+        public async Task<HttpResponseMessage> DeleteProducts(long[] ids, bool ignoreNotFound = false)
         {
-            return DeleteProduct((object)id);
-        }
-
-        public Task<HttpResponseMessage> DeleteProduct(object id)
-        {
-            return httpClient.DeleteAsync($"{BuildBasePath()}/Products/{id}");
-        }
-
-        public Task<HttpResponseMessage> Export(string tableName)
-        {
-            return httpClient.GetAsync($"{BuildBasePath()}/Export/{tableName}");
+            using var request = new HttpRequestMessage(HttpMethod.Delete, $"{BasePath}/Products")
+            {
+                Content = JsonContent.Create(new DeleteProductsRequest(ids, ignoreNotFound)),
+            };
+            return await httpClient.SendAsync(request).ConfigureAwait(false);
         }
     }
 }

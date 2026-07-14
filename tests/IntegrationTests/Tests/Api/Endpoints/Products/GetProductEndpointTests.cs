@@ -16,8 +16,8 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         public async Task GetProductOk()
         {
             //Given
-            var request = new CreateProductRequestBuilder().Build();
-            var product = await ApiClient.CreateProduct(request).To<Product>();
+            await CreateProducts();
+            var product = initialProducts[1];
 
             //When
             var response = await ApiClient.GetProduct(product.Id);
