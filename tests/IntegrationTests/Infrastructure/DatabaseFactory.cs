@@ -33,7 +33,7 @@ namespace IntegrationTests.Infrastructure
                 WriteMessage("Does not exist. Creating new container.");
                 container = await CreateContainer();
                 WriteMessage("Container created.");
-                connectionString = GetConnectionString();
+                connectionString = GetConnectionString(container);
             }
 
             WriteMessage("Migrating database.");
@@ -77,8 +77,13 @@ namespace IntegrationTests.Infrastructure
         static string DockerHost => 
             Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
 
-        static string GetConnectionString()
+        static string GetConnectionString(MsSqlContainer? container = null)
         {
+            if (DockerHost == "localhost")
+            {
+                return container!.GetConnectionString();
+            }
+
             var builder = new SqlConnectionStringBuilder()
             {
                 InitialCatalog = DatabaseName,
