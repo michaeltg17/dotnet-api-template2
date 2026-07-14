@@ -21,7 +21,7 @@ echo "Build successful"
 echo ""
 echo "[3/3] Running tests..."
 mkdir -p test-results
-dotnet test Template.slnx --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --results-directory "test-results"
+dotnet test Template.slnx --no-build
 echo "Tests passed"
 
 echo ""

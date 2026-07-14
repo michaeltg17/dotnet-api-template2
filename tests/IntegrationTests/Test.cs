@@ -29,7 +29,7 @@ namespace IntegrationTests
 
         Task<int> DeleteEntitiesFromDb()
         {
-            var sql = "DELETE FROM Products;";
+            var sql = "TRUNCATE TABLE Products;";
             return Context.Database.ExecuteSqlRawAsync(sql);
         }
 
