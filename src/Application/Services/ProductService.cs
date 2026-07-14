@@ -1,3 +1,4 @@
+using FluentValidation;
 using Application.Exceptions;
 using Application.Models.Requests;
 using Application.Models.Responses;
@@ -7,7 +8,7 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class ProductService(AppDbContext context)
+    public class ProductService(AppDbContext context, IValidator<Product> validator)
     {
         public async Task<Product> GetById(long id)
         {
@@ -34,6 +35,7 @@ namespace Application.Services
                 Description = request.Description,
                 Price = request.Price,
             };
+            validator.ValidateAndThrow(product);
             await context.Products.AddAsync(product).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
             return product;
@@ -49,6 +51,7 @@ namespace Application.Services
             product.Name = request.Name;
             product.Description = request.Description;
             product.Price = request.Price;
+            validator.ValidateAndThrow(product);
             await context.SaveChangesAsync().ConfigureAwait(false);
             return product;
         }

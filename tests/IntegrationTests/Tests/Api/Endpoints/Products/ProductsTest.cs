@@ -21,7 +21,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 ApiClient.CreateProduct(request).To<Product>(),
                 ApiClient.CreateProduct(request).To<Product>()
             };
-            initialProducts.AddRange(await Task.WhenAll(tasks));
+            initialProducts.AddRange((await Task.WhenAll(tasks)).OrderBy(p => p.Id));
         }
 
         public async Task ValidateInitialProductsAreTheSame(IEnumerable<long>? exceptIds = null)

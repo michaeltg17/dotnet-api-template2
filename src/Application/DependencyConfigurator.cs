@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Application.Services;
+using Domain.Validators;
 
 namespace Application
 {
@@ -7,6 +9,7 @@ namespace Application
     {
         public static IServiceCollection AddApplicationDependencies(this IServiceCollection services)
         {
+            services.AddValidatorsFromAssemblyContaining<ProductValidator>();
             services.AddScoped<ProductService>();
 
             return services;

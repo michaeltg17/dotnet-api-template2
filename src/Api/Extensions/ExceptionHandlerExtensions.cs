@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using FluentValidation;
+using Application.Exceptions;
 using Core.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +25,7 @@ namespace Api.Extensions
                 httpContext.Response.StatusCode = exception switch
                 {
                     BadHttpRequestException => (int)HttpStatusCode.BadRequest,
+                    ValidationException => (int)HttpStatusCode.BadRequest,
                     NotFoundException => (int)HttpStatusCode.NotFound,
                     AppException => (int)HttpStatusCode.BadRequest,
                     _ => (int)HttpStatusCode.InternalServerError,
