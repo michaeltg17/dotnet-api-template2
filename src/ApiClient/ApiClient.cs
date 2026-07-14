@@ -40,13 +40,13 @@ namespace ApiClient
             return httpClient.PutAsJsonAsync($"{BasePath}/Products/{id}", request);
         }
 
-        public async Task<HttpResponseMessage> DeleteProducts(long[] ids, bool ignoreNotFound = false)
+        public async Task<HttpResponseMessage> DeleteProducts(DeleteProductsRequest request)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Delete, $"{BasePath}/Products")
+            using var jsonRequest = new HttpRequestMessage(HttpMethod.Delete, $"{BasePath}/Products")
             {
-                Content = JsonContent.Create(new DeleteProductsRequest(ids, ignoreNotFound)),
+                Content = JsonContent.Create(request),
             };
-            return await httpClient.SendAsync(request).ConfigureAwait(false);
+            return await httpClient.SendAsync(jsonRequest).ConfigureAwait(false);
         }
     }
 }

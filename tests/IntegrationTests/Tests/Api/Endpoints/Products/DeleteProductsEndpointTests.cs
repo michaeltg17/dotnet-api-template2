@@ -1,10 +1,12 @@
 using ApiClient.Extensions;
+using Application.Models.Requests;
 using Application.Models.Responses;
 using AwesomeAssertions;
 using Core.Testing.Builders;
 using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using System.Net;
 using Xunit;
 
@@ -18,24 +20,18 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //Given
             await CreateProducts();
+            var product = initialProducts[1];
+            var request = new DeleteProductsRequest([product.Id]);
 
             //When
-            var request = new DeleteProductsRequestBuilder()
-                .WithIds([initialProducts[1].Id])
-                .Build();
-            var response = await ApiClient.DeleteProducts(request.Ids, request.IgnoreNotFound);
-            var result = await response.To<DeleteProductsResponse>();
+            var response = await ApiClient.DeleteProducts(request);
 
             //Then
+            var result = await response.To<DeleteProductsResponse>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var expected = new DeleteProductsResponseBuilder()
-                .WithDeletedIds([initialProducts[1].Id])
-                .Build();
+            var expected = new DeleteProductsResponse([product.Id], []);
             result.Should().BeEquivalentTo(expected);
-
-            var dbProduct = await Context.Products.FindAsync(initialProducts[1].Id);
-            dbProduct.Should().BeNull();
-            await ValidateInitialProductsAreTheSame([initialProducts[1].Id]);
+            await ValidateInitialProductsAreTheSame([product.Id]);
         }
 
         [Fact]
@@ -43,85 +39,71 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //Given
             await CreateProducts();
+            var ids = new[] { initialProducts[0].Id, initialProducts[1].Id };
+            var request = new DeleteProductsRequest(ids);
 
             //When
-            var ids = new[] { initialProducts[0].Id, initialProducts[1].Id };
-            var request = new DeleteProductsRequestBuilder()
-                .WithIds(ids)
-                .Build();
-            var response = await ApiClient.DeleteProducts(request.Ids, request.IgnoreNotFound);
-            var result = await response.To<DeleteProductsResponse>();
+            var response = await ApiClient.DeleteProducts(request);
 
             //Then
+            var result = await response.To<DeleteProductsResponse>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var expected = new DeleteProductsResponseBuilder()
-                .WithDeletedIds(ids)
-                .Build();
+            var expected = new DeleteProductsResponse(ids, []);
             result.Should().BeEquivalentTo(expected);
-
-            var dbProducts = await Context.Products.ToListAsync();
-            dbProducts.Should().HaveCount(1);
-            dbProducts[0].Id.Should().Be(initialProducts[2].Id);
+            await ValidateInitialProductsAreTheSame(ids);
         }
 
         [Fact]
-        public async Task NonExistentProduct_ExpectedProblemDetails()
+        public async Task NoProduct_ExpectedProblemDetails()
         {
             //Given
             await CreateProducts();
+            var request = new DeleteProductsRequest([5]);
 
             //When
-            var response = await ApiClient.DeleteProducts([5]);
+            var response = await ApiClient.DeleteProducts(request);
 
             //Then
             await ProblemDetailsValidator.ValidateNotFoundException(response, "Product", "Products", [5]);
         }
 
         [Fact]
-        public async Task PartialNotFound_DeleteOnlyFound_OnlyExistingDeleted()
+        public async Task SomeNotFound_IgnoreNotFound_ExistingDeleted()
         {
             //Given
             await CreateProducts();
+            var existingId = initialProducts[0].Id;
+            var notFoundId = 10;
+            var request = new DeleteProductsRequest([existingId, notFoundId], true);
 
             //When
-            var ids = new[] { initialProducts[0].Id, long.MaxValue };
-            var request = new DeleteProductsRequestBuilder()
-                .WithIds(ids)
-                .WithIgnoreNotFound(true)
-                .Build();
-            var response = await ApiClient.DeleteProducts(request.Ids, request.IgnoreNotFound);
-            var result = await response.To<DeleteProductsResponse>();
+            var response = await ApiClient.DeleteProducts(request);
 
             //Then
+            var result = await response.To<DeleteProductsResponse>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var expected = new DeleteProductsResponseBuilder()
-                .WithDeletedIds([initialProducts[0].Id])
-                .WithNotFoundIds([long.MaxValue])
-                .Build();
+            var expected = new DeleteProductsResponse([existingId], [notFoundId]);
             result.Should().BeEquivalentTo(expected);
+            await ValidateInitialProductsAreTheSame([existingId]);
         }
 
         [Fact]
-        public async Task AllNotFound_DeleteOnlyFound_ReturnsEmpty()
+        public async Task NotFoundIds_IgnoreNotFound_ReturnsEmpty()
         {
             //Given
             await CreateProducts();
+            long[] ids = [10, 11];
+            var request = new DeleteProductsRequest(ids, true);
 
             //When
-            var ids = new[] { long.MaxValue - 1, long.MaxValue };
-            var request = new DeleteProductsRequestBuilder()
-                .WithIds(ids)
-                .WithIgnoreNotFound(true)
-                .Build();
-            var response = await ApiClient.DeleteProducts(request.Ids, request.IgnoreNotFound);
-            var result = await response.To<DeleteProductsResponse>();
+            var response = await ApiClient.DeleteProducts(request);
 
             //Then
+            var result = await response.To<DeleteProductsResponse>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var expected = new DeleteProductsResponseBuilder()
-                .WithNotFoundIds(ids)
-                .Build();
+            var expected = new DeleteProductsResponse([], ids);
             result.Should().BeEquivalentTo(expected);
+            await ValidateInitialProductsAreTheSame();
         }
     }
 }

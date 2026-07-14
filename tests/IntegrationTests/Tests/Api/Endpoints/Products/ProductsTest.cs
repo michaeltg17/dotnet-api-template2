@@ -1,11 +1,11 @@
 ﻿using ApiClient.Extensions;
 using AwesomeAssertions;
 using Core.Testing.Builders;
+using Domain.Comparers;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
@@ -25,12 +25,12 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
             initialProducts.AddRange(await Task.WhenAll(tasks));
         }
 
-        public async Task ValidateInitialProductsAreTheSame(IEnumerable<long> exceptIds)
+        public async Task ValidateInitialProductsAreTheSame(IEnumerable<long>? exceptIds = null)
         {
+            exceptIds ??= [];
             var dbProducts = await Context.Products.ToListAsync();
-            var filteredProducts = dbProducts.Where(p => !exceptIds.Contains(p.Id)).ToList();
-            var expectedProducts = initialProducts.Where(p => !exceptIds.Contains(p.Id)).ToList();
-            filteredProducts.Should().BeEquivalentTo(expectedProducts);
+            var expectedProducts = initialProducts.Except(dbProducts, new ProductComparer()).ToList();
+            dbProducts.Should().BeEquivalentTo(expectedProducts);
         }
     }
 }
