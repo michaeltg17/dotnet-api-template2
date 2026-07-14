@@ -1,30 +1,28 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOLUTION="Template.slnx"
 
 echo "========================================="
-echo "  Running ci"
+echo "  Running CI"
 echo "========================================="
 
-# Step 1: Restore
-echo ""
+echo
 echo "[1/3] Restoring packages..."
-dotnet restore Template.slnx
+dotnet restore "$SOLUTION"
 echo "Restore successful"
 
-# Step 2: Build
-echo ""
+echo
 echo "[2/3] Building..."
-dotnet build Template.slnx
+dotnet build "$SOLUTION" --configuration Release --no-restore
 echo "Build successful"
 
-# Step 3: Tests
-echo ""
+echo
 echo "[3/3] Running tests..."
-mkdir -p test-results
-dotnet test Template.slnx --no-build
+dotnet test "$SOLUTION" --configuration Release --no-build
 echo "Tests passed"
 
-echo ""
+echo
 echo "========================================="
-echo "  All ci checks passed!"
+echo "  All CI checks passed!"
 echo "========================================="

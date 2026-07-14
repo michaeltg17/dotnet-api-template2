@@ -33,7 +33,7 @@ namespace IntegrationTests.Infrastructure
                 WriteMessage("Does not exist. Creating new container.");
                 container = await CreateContainer();
                 WriteMessage("Container created.");
-                connectionString = GetConnectionString(container);
+                connectionString = GetConnectionString();
             }
 
             WriteMessage("Migrating database.");
@@ -62,9 +62,8 @@ namespace IntegrationTests.Infrastructure
 
         async Task<MsSqlContainer> CreateContainer()
         {
-            var sqlServerContainer = new MsSqlBuilder()
+            var sqlServerContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
                 .WithName(ContainerName)
-                .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
                 .WithPortBinding(HostPort, 1433)
                 .WithCleanUp(!testSettings.KeepAliveDatabase)
                 .WithAutoRemove(!testSettings.KeepAliveDatabase)
@@ -75,15 +74,8 @@ namespace IntegrationTests.Infrastructure
             return sqlServerContainer;
         }
 
-        static string GetConnectionString(MsSqlContainer container)
-        {
-            var builder = new SqlConnectionStringBuilder(container.GetConnectionString())
-            {
-                InitialCatalog = DatabaseName
-            };
-
-            return builder.ConnectionString;
-        }
+        static string DockerHost => 
+            Environment.GetEnvironmentVariable("TESTCONTAINERS_HOST_OVERRIDE") ?? "localhost";
 
         static string GetConnectionString()
         {
@@ -92,7 +84,7 @@ namespace IntegrationTests.Infrastructure
                 InitialCatalog = DatabaseName,
                 UserID = MsSqlBuilder.DefaultUsername,
                 Password = MsSqlBuilder.DefaultPassword,
-                DataSource = "localhost," + HostPort,
+                DataSource = DockerHost + "," + HostPort,
                 TrustServerCertificate = true
             };
 
