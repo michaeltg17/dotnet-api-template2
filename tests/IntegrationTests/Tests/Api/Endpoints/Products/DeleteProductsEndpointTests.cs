@@ -54,21 +54,21 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         }
 
         [Fact]
-        public async Task NoProduct_ExpectedProblemDetails()
+        public async Task NoProducts_IgnoreNotFoundFalse_ExpectedProblemDetails()
         {
             //Given
             await CreateProducts();
-            var request = new DeleteProductsRequest([5]);
+            var request = new DeleteProductsRequest([5, 6]);
 
             //When
             var response = await ApiClient.DeleteProducts(request);
 
             //Then
-            await ProblemDetailsValidator.ValidateNotFoundException(response, "Product", "Products", [5]);
+            await ProblemDetailsValidator.ValidateNotFoundException(response, "Product", "Products", [5, 6]);
         }
 
         [Fact]
-        public async Task SomeNotFound_IgnoreNotFound_ExistingDeleted()
+        public async Task SomeNotFound_IgnoreNotFoundTrue_ExistingDeleted()
         {
             //Given
             await CreateProducts();
@@ -88,11 +88,11 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         }
 
         [Fact]
-        public async Task NotFoundIds_IgnoreNotFound_ReturnsEmpty()
+        public async Task AllNotFoundIds_IgnoreNotFoundTrue_ExpectedResponse()
         {
             //Given
             await CreateProducts();
-            long[] ids = [10, 11];
+            long[] ids = [15, 16];
             var request = new DeleteProductsRequest(ids, true);
 
             //When
