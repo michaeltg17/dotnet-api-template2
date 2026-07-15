@@ -5,8 +5,10 @@ using Core.Testing.Builders;
 using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Serilog.Events;
 using System.Net;
 using Xunit;
+using Serilog.Sinks.InMemory.Assertions;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
@@ -17,14 +19,13 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         public async Task CreateProductOk()
         {
             //Given
-            await CreateProducts();
+            var request = new CreateProductRequestBuilder().Build();
 
             //When
-            var request = new CreateProductRequestBuilder().Build();
             var response = await ApiClient.CreateProduct(request);
-            var product = await response.To<Product>();
 
             //Then: retuns expected product
+            var product = await response.To<Product>();
             var expected = new ProductBuilder()
                 .WithValues(p =>
                 {
@@ -42,6 +43,15 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
             //Then: expected product in db
             var dbProduct = await Context.Products.FindAsync(product.Id);
             dbProduct.Should().BeEquivalentTo(expected);
+
+            //Then: expected logging
+            WebApplicationFactoryFixture.InMemorySink
+                .Should()
+                .HaveMessage("Product with id '{id}' created successfully.")
+                .Appearing().Once()
+                .WithLevel(LogEventLevel.Information)
+                .WithProperty("id")
+                .WithValue(product.Id);
         }
 
         [Fact]

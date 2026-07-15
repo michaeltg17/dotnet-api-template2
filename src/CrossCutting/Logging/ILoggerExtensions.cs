@@ -4,19 +4,13 @@ namespace CrossCutting.Logging
 {
     public static partial class ILoggerExtensions
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "{middlewareName} started.")]
-        public static partial void LogMiddlewareStarted(this ILogger logger, string middlewareName);
+        [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Product with id '{id}' created successfully.")]
+        public static partial void LogProductCreated(this ILogger logger, long id);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "{middlewareName} finished.")]
-        public static partial void LogMiddlewareFinished(this ILogger logger, string middlewareName);
+        [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Product with id '{id}' updated successfully.")]
+        public static partial void LogProductUpdated(this ILogger logger, long id);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "{filterName} started on {actionName}.")]
-        public static partial void LogFilterStarted(this ILogger logger, string filterName, string? actionName);
-
-        [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "{filterName} finished on {actionName}.")]
-        public static partial void LogFilterFinished(this ILogger logger, string filterName, string? actionName);
-
-        [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "{route} - {httpMethod}")]
-        public static partial void LogEndpoint(this ILogger logger, string route, string httpMethod);
+        [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Products with ids '{ids}' deleted successfully.")]
+        public static partial void LogProductsDeleted(this ILogger logger, IEnumerable<long> ids);
     }
 }

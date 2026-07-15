@@ -5,8 +5,10 @@ using Core.Testing.Builders;
 using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog.Events;
 using System.Net;
 using Xunit;
+using Serilog.Sinks.InMemory.Assertions;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
@@ -40,6 +42,15 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 .Build();
 
             updatedProduct.Should().BeEquivalentTo(expected);
+
+            //Then: expected logging
+            WebApplicationFactoryFixture.InMemorySink
+                .Should()
+                .HaveMessage("Product with id '{id}' updated successfully.")
+                .Appearing().Once()
+                .WithLevel(LogEventLevel.Information)
+                .WithProperty("id")
+                .WithValue(product.Id);
         }
 
         [Fact]

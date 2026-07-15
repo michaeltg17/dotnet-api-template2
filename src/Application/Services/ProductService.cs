@@ -5,10 +5,12 @@ using Application.Models.Responses;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Microsoft.Extensions.Logging;
+using CrossCutting.Logging;
 
 namespace Application.Services
 {
-    public class ProductService(AppDbContext context, IValidator<Product> validator)
+    public class ProductService(AppDbContext context, IValidator<Product> validator, ILogger<ProductService> logger)
     {
         public async Task<Product> GetById(long id)
         {
@@ -38,6 +40,7 @@ namespace Application.Services
             validator.ValidateAndThrow(product);
             await context.Products.AddAsync(product).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
+            logger.LogProductCreated(product.Id);
             return product;
         }
 
@@ -53,6 +56,7 @@ namespace Application.Services
             product.Price = request.Price;
             validator.ValidateAndThrow(product);
             await context.SaveChangesAsync().ConfigureAwait(false);
+            logger.LogProductUpdated(product.Id);
             return product;
         }
 
@@ -74,6 +78,8 @@ namespace Application.Services
                 context.Products.RemoveRange(products);
                 await context.SaveChangesAsync().ConfigureAwait(false);
             }
+
+            logger.LogProductsDeleted(foundIds);
 
             return new DeleteProductsResponse([.. foundIds], notFoundIds);
         }

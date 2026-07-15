@@ -7,8 +7,10 @@ using Core.Testing.Validators;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto;
+using Serilog.Events;
 using System.Net;
 using Xunit;
+using Serilog.Sinks.InMemory.Assertions;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
@@ -51,6 +53,15 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
             var expected = new DeleteProductsResponse(ids, []);
             result.Should().BeEquivalentTo(expected);
             await ValidateInitialProductsAreTheSame(ids);
+
+            //Then: expected logging
+            WebApplicationFactoryFixture.InMemorySink
+                .Should()
+                .HaveMessage("Products with ids '{ids}' deleted successfully.")
+                .Appearing().Once()
+                .WithLevel(LogEventLevel.Information)
+                .WithProperty("ids")
+                .WithValue(ids);
         }
 
         [Fact]

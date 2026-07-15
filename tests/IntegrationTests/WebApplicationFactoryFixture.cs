@@ -45,7 +45,12 @@ namespace IntegrationTests
             {
                 Api.Startup.ApplyCommonSerilogConfiguration(context, services, configuration);
                 configuration.WriteTo.Sink(InjectableTestOutputSink);
-                configuration.WriteTo.Sink(InMemorySink);
+
+                //Using Map sink to fix "Only first test is logged"
+                configuration.WriteTo.Map(
+                    _ => InMemorySink,
+                    (_, writeTo) => writeTo.Sink(InMemorySink),
+                    sinkMapCountLimit: 1);
 
                 if (testSettings.EnableSqlLogging)
                 {
