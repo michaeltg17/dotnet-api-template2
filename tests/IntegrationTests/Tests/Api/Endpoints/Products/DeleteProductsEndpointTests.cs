@@ -61,7 +61,7 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 .Appearing().Once()
                 .WithLevel(LogEventLevel.Information)
                 .WithProperty("ids")
-                .WithValue(ids);
+                .WithValue($"[{ids[0]}, {ids[1]}]");
         }
 
         [Fact]
