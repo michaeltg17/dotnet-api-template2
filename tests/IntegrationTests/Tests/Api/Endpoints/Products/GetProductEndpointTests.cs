@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Core.Testing.Builders;
 using Core.Testing.Validators;
 using Domain.Models;
+using IntegrationTests.Collections;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Xunit;

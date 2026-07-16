@@ -1,6 +1,7 @@
+using IntegrationTests.Fixtures;
 using Xunit;
 
-namespace IntegrationTests;
+namespace IntegrationTests.Collections;
 
 /// <summary>
 /// This class has no code, and is never created. Its purpose is simply

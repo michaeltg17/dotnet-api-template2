@@ -16,7 +16,7 @@ using IntegrationTests.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Serilog.Sinks.XUnit.Injectable.Abstract;
 
-namespace IntegrationTests
+namespace IntegrationTests.Fixtures
 {
     internal abstract class WebApplicationFactoryFixture(
         ITestSettings testSettings,

@@ -3,7 +3,7 @@ using IntegrationTests.Infrastructure;
 using IntegrationTests.Settings;
 using Xunit.v3;
 
-namespace IntegrationTests
+namespace IntegrationTests.Fixtures
 {
     internal class DevelopmentWebApplicationFactoryFixture(ITestSettings testSettings, DatabaseFactory databaseFactory)
         : WebApplicationFactoryFixture(testSettings, databaseFactory, Environments.Development)

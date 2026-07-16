@@ -9,6 +9,7 @@ using Serilog.Events;
 using System.Net;
 using Xunit;
 using Serilog.Sinks.InMemory.Assertions;
+using IntegrationTests.Collections;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {

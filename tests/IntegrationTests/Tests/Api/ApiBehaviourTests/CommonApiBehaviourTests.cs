@@ -4,6 +4,7 @@ using AwesomeAssertions;
 using Core.Testing;
 using Core.Testing.Builders;
 using Core.Testing.Validators;
+using IntegrationTests.Collections;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Xunit;

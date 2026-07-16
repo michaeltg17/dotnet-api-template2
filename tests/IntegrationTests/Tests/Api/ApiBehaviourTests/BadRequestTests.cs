@@ -6,6 +6,7 @@ using Core.Testing.Validators;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using ApiClient.Extensions;
+using IntegrationTests.Collections;
 
 namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 {

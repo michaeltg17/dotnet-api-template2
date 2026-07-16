@@ -2,6 +2,7 @@ using ApiClient.Extensions;
 using AwesomeAssertions;
 using Core.Testing.Builders;
 using Domain.Models;
+using IntegrationTests.Collections;
 using System.Net;
 using Xunit;
 

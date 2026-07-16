@@ -5,6 +5,7 @@ using Domain.Models;
 using ApiClient.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Core.Testing.Validators;
+using IntegrationTests.Collections;
 
 namespace IntegrationTests.Tests.ApiClient
 {
