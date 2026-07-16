@@ -22,18 +22,6 @@ namespace Core.Testing.Validators
             await ValidateNotFoundException(response, builder);
         }
 
-        public static async Task ValidateValidationException(HttpResponseMessage response, string instance, IDictionary<string, string[]> expectedErrors)
-        {
-            var problemDetails = await response.To<ProblemDetails>();
-            var traceId = ValidateTraceId(problemDetails);
-            var expected = new ProblemDetailsBuilder()
-                .WithValidationException(instance, expectedErrors)
-                .WithTraceId(traceId)
-                .Build();
-            problemDetails.Should().BeEquivalentTo(expected);
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        }
-
         public static async Task ValidateNotFoundException(HttpResponseMessage response, string entity, string route, long id)
         {
             var builder = new ProblemDetailsBuilder().WithNotFoundException(entity, route, id);
@@ -51,6 +39,21 @@ namespace Core.Testing.Validators
 
             problemDetails.Should().BeEquivalentTo(expected);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        public static async Task ValidateValidationException(
+            HttpResponseMessage response,
+            string instance,
+            IDictionary<string, string[]> expectedErrors)
+        {
+            var problemDetails = await response.To<ProblemDetails>();
+            var traceId = ValidateTraceId(problemDetails);
+            var expected = new ProblemDetailsBuilder()
+                .WithValidationException(instance, expectedErrors)
+                .WithTraceId(traceId)
+                .Build();
+            problemDetails.Should().BeEquivalentTo(expected);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }
