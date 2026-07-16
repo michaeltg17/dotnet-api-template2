@@ -57,7 +57,7 @@ public sealed class ProductValidatorTests
         var result = validator.TestValidate(product);
 
         //Then
-        if (isValid) result.ShouldNotHaveValidationErrorFor(property);
-        else result.ShouldHaveValidationErrorFor(property);
+        if (isValid) result.ShouldNotHaveAnyValidationErrors();
+        else result.ShouldHaveValidationErrorFor(property).Only();
     }
 }
