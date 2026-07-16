@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System.Net;
 using System.Text.Json;
 
@@ -41,12 +42,13 @@ namespace Api.Extensions
         {
             var isInternalServerError = httpContext.Response.StatusCode == (int)HttpStatusCode.InternalServerError;
             var isValidationException = exception is ValidationException;
+            var isDevelopment = httpContext.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment();
 
             var detail = exception switch
             {
                 BadHttpRequestException { InnerException: JsonException jsonEx } => exception.Message + " " + jsonEx.Message,
                 BadHttpRequestException => exception.Message,
-                _ when isInternalServerError => "Internal server error. Please contact the API support.",
+                _ when isInternalServerError && !isDevelopment => "Internal server error. Please contact the API support.",
                 _ when isValidationException => "One or more validation errors occurred.",
                 _ => exception!.Message
             };
@@ -54,7 +56,7 @@ namespace Api.Extensions
             var problemDetails = new ProblemDetails
             {
                 Type = isValidationException ? "https://tools.ietf.org/html/rfc9110#section-15.5.1" : null,
-                Title = isInternalServerError ? "InternalServerError" : exception.GetType().GetNameWithoutGenericArity(),
+                Title = isInternalServerError && !isDevelopment ? "InternalServerError" : exception.GetType().GetNameWithoutGenericArity(),
                 Detail = detail,
                 Status = httpContext.Response.StatusCode,
                 Instance = httpContext.Request.Path,
@@ -67,9 +69,12 @@ namespace Api.Extensions
             if (exception is NotFoundException notFoundException)
                 problemDetails.Extensions["notFoundIds"] = notFoundException.NotFoundIds;
 
+            if (isInternalServerError && isDevelopment)
+                problemDetails.Extensions["exception"] = exception.ToString();
+
             return new ProblemDetailsContext
             {
-                Exception = isInternalServerError ? null : exception,
+                Exception = isInternalServerError && !isDevelopment ? null : exception,
                 HttpContext = httpContext,
                 ProblemDetails = problemDetails
             };
