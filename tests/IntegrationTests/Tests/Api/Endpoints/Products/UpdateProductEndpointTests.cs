@@ -80,9 +80,9 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
                 $"{BaseInstance}/{initialProducts[0].Id}",
                 new Dictionary<string, string[]>
                 {
-                    { "Name", ["'Name' must not be empty."] },
-                    { "Description", ["'Description' must not be empty."] },
-                    { "Price", ["'Price' must be greater than '0'."] }
+                    { "name", ["'name' must not be empty."] },
+                    { "description", ["'description' must not be empty."] },
+                    { "price", ["'price' must be greater than '0'."] }
                 });
         }
     }

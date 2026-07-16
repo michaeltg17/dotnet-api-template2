@@ -1,7 +1,6 @@
 ﻿using CrossCutting;
 using Persistence;
 using Serilog;
-using System.Text.Json.Serialization;
 using Api.Extensions;
 using Application;
 
@@ -11,6 +10,8 @@ namespace Api
     {
         public static void Run(string[] args)
         {
+            Application.DependencyConfigurator.ConfigureValidationWithCamelCase();
+
             WebApplication
                 .CreateBuilder(args)
                 .AddDependencies()
