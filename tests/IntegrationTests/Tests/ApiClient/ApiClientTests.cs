@@ -4,8 +4,10 @@ using ApiClient.Extensions;
 using Domain.Models;
 using ApiClient.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Core.Testing.Validators;
+using Core.Testing;
+using Core.Testing.Extensions;
 using IntegrationTests.Collections;
+using Core.Testing.Extensions;
 
 namespace IntegrationTests.Tests.ApiClient
 {
@@ -20,7 +22,7 @@ namespace IntegrationTests.Tests.ApiClient
 
             //Then
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
+            TraceIdValidator.IsValid(problemDetails.TraceId!).Should().BeTrue();
 
             var expectedMessage = $$"""
                 {
@@ -29,12 +31,12 @@ namespace IntegrationTests.Tests.ApiClient
                   "status": 500,
                   "detail": "Internal server error. Please contact the API support.",
                   "instance": "/Test/ThrowInternalServerError",
-                  "traceId": "{{traceId}}"
+                  "traceId": "{{problemDetails.TraceId}}"
                 }
                 """;
 
             var func = response.To<Product>;
-            await func.Should().ThrowAsync<ApiException>().WithMessage(expectedMessage + '*');
+            await func.Should().ThrowAsync<ApiException>().WithMessage(expectedMessage);
         }
 
         [Fact]

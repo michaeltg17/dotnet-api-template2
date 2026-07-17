@@ -3,7 +3,7 @@ using ApiClient.Extensions;
 using AwesomeAssertions;
 using Core.Testing;
 using Core.Testing.Builders;
-using Core.Testing.Validators;
+using Core.Testing.Extensions;
 using IntegrationTests.Collections;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -22,10 +22,10 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
 
             //Then
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
+            TraceIdValidator.IsValid(problemDetails.TraceId!).Should().BeTrue();
 
             var expected = new ProblemDetailsBuilder()
-                .WithTraceId(traceId)
+                .WithTraceId(problemDetails.TraceId!)
                 .WithNotFound()
                 .Build();
 

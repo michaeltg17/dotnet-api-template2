@@ -4,6 +4,10 @@ namespace Core.Testing.Extensions
 {
     public static class ProblemDetailsExtensions
     {
-        public static string GetTraceId(this ProblemDetails problemDetails) => (string)problemDetails.Extensions["traceId"]!;
+        extension(ProblemDetails problemDetails)
+        {
+            public string? TraceId => problemDetails.Extensions["traceId"] as string;
+            public string? Exception => problemDetails.Extensions["exception"] as string;
+        }
     }
 }

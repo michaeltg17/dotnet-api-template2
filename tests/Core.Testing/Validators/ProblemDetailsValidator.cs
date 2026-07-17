@@ -2,6 +2,7 @@
 using Core.Testing.Builders;
 using Core.Testing.Extensions;
 using AwesomeAssertions;
+using Core.Testing;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,20 +10,6 @@ namespace Core.Testing.Validators
 {
     public static class ProblemDetailsValidator
     {
-        public static string ValidateTraceId(ProblemDetails problemDetails)
-        {
-            var traceId = problemDetails.GetTraceId();
-            TraceIdValidator.IsValid(traceId).Should().BeTrue();
-            return traceId;
-        }
-
-        public static string ValidateException(ProblemDetails problemDetails)
-        {
-            var exceptionText = (string)problemDetails.Extensions["exception"]!;
-            ExceptionValidator.IsValid(exceptionText).Should().BeTrue();
-            return exceptionText;
-        }
-
         public static async Task ValidateNotFoundException(HttpResponseMessage response, string entity, string route, long[] ids)
         {
             var builder = new ProblemDetailsBuilder().WithNotFoundException(entity, route, ids);
@@ -38,10 +25,10 @@ namespace Core.Testing.Validators
         private static async Task ValidateNotFoundException(HttpResponseMessage response, ProblemDetailsBuilder builder)
         {
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = ValidateTraceId(problemDetails);
+            TraceIdValidator.IsValid(problemDetails.TraceId!).Should().BeTrue();
 
             var expected = builder
-                .WithTraceId(traceId)
+                .WithTraceId(problemDetails.TraceId!)
                 .Build();
 
             problemDetails.Should().BeEquivalentTo(expected);
@@ -54,10 +41,10 @@ namespace Core.Testing.Validators
             IDictionary<string, string[]> expectedErrors)
         {
             var problemDetails = await response.To<ProblemDetails>();
-            var traceId = ValidateTraceId(problemDetails);
+            TraceIdValidator.IsValid(problemDetails.TraceId!).Should().BeTrue();
             var expected = new ProblemDetailsBuilder()
                 .WithValidationException(instance, expectedErrors)
-                .WithTraceId(traceId)
+                .WithTraceId(problemDetails.TraceId!)
                 .Build();
             problemDetails.Should().BeEquivalentTo(expected);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
