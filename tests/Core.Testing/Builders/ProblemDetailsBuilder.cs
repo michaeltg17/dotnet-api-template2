@@ -74,14 +74,20 @@ namespace Core.Testing.Builders
             return this;
         }
 
-        public ProblemDetailsBuilder WithInternalServerError(string instance)
+        public ProblemDetailsBuilder WithInternalServerError(string title, string detail, string instance)
         {
             Item.Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1";
-            Item.Title = "Exception";
+            Item.Title = title;
             Item.Status = (int)HttpStatusCode.InternalServerError;
-            Item.Detail = "Sensitive data";
+            Item.Detail = detail;
             Item.Instance = instance;
 
+            return this;
+        }
+
+        public ProblemDetailsBuilder WithException(string exceptionText)
+        {
+            Item.Extensions["exception"] = exceptionText;
             return this;
         }
 

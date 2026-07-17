@@ -1,6 +1,5 @@
 using ApiClient.Extensions;
 using AwesomeAssertions;
-using Core.Testing;
 using Core.Testing.Builders;
 using Core.Testing.Validators;
 using IntegrationTests.Collections;
@@ -22,14 +21,14 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
             //Then
             var problemDetails = await response.To<ProblemDetails>();
             var traceId = ProblemDetailsValidator.ValidateTraceId(problemDetails);
+            var exceptionText = ProblemDetailsValidator.ValidateException(problemDetails);
 
             var expected = new ProblemDetailsBuilder()
+                .WithInternalServerError("Exception", "Sensitive data", "/Test/ThrowInternalServerError")
                 .WithTraceId(traceId)
-                .WithInternalServerError("/Test/ThrowInternalServerError")
+                .WithException(exceptionText)
                 .Build();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            responseContent.ToLowerInvariant().Should().Contain("sensitive data".ToLowerInvariant());
             problemDetails.Should().BeEquivalentTo(expected);
             response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         }

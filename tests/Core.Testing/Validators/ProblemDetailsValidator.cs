@@ -16,6 +16,13 @@ namespace Core.Testing.Validators
             return traceId;
         }
 
+        public static string ValidateException(ProblemDetails problemDetails)
+        {
+            var exceptionText = (string)problemDetails.Extensions["exception"]!;
+            ExceptionValidator.IsValid(exceptionText).Should().BeTrue();
+            return exceptionText;
+        }
+
         public static async Task ValidateNotFoundException(HttpResponseMessage response, string entity, string route, long[] ids)
         {
             var builder = new ProblemDetailsBuilder().WithNotFoundException(entity, route, ids);

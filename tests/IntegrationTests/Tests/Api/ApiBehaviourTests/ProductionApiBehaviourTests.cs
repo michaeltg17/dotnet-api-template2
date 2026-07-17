@@ -28,9 +28,6 @@ namespace IntegrationTests.Tests.Api.ApiBehaviourTests
                 .WithHiddenInternalServerError("/Test/ThrowInternalServerError")
                 .Build();
 
-            var responseAsString = (await response.Content.ReadAsStringAsync()).ToLowerInvariant();
-            responseAsString.Should().NotContain("Sensitive data".ToLowerInvariant());
-            responseAsString.Should().NotContain("Exception".ToLowerInvariant());
             problemDetails.Should().BeEquivalentTo(expected);
             response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         }

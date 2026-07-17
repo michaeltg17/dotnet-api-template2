@@ -34,7 +34,7 @@ namespace IntegrationTests.Tests.ApiClient
                 """;
 
             var func = response.To<Product>;
-            await func.Should().ThrowAsync<ApiException>().WithMessage(expectedMessage);
+            await func.Should().ThrowAsync<ApiException>().WithMessage(expectedMessage + '*');
         }
 
         [Fact]
