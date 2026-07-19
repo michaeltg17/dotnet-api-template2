@@ -15,7 +15,7 @@ namespace IntegrationTests.Tests.ApiClient
     public class ApiClientTests : Test
     {
         [Fact]
-        public async Task InternalServerError_ApiExceptionIsThrownWithExpectedProblemDetails()
+        public async Task MappingEntityFromInvalidResponse_ApiExceptionIsThrownWithExpectedProblemDetails()
         {
             //When
             var response = await ApiClient.Test.ThrowInternalServerError();
@@ -23,14 +23,16 @@ namespace IntegrationTests.Tests.ApiClient
             //Then
             var problemDetails = await response.To<ProblemDetails>();
             TraceIdValidator.IsValid(problemDetails.TraceId!).Should().BeTrue();
+            ExceptionValidator.IsValid(problemDetails.Exception!).Should().BeTrue();
 
             var expectedMessage = $$"""
                 {
                   "type": "https://tools.ietf.org/html/rfc9110#section-15.6.1",
-                  "title": "InternalServerError",
+                  "title": "Exception",
                   "status": 500,
-                  "detail": "Internal server error. Please contact the API support.",
+                  "detail": "Sensitive data",
                   "instance": "/Test/ThrowInternalServerError",
+                  "exception": *,
                   "traceId": "{{problemDetails.TraceId}}"
                 }
                 """;
@@ -46,7 +48,7 @@ namespace IntegrationTests.Tests.ApiClient
             var response = await ApiClient.Test.GetOk();
 
             //Then
-            var func = response.To<ProblemDetails>;
+            var func = response.To<Product>;
             await func.Should().ThrowAsync<ApiClientException>().WithMessage("Response content is null, empty or whitespace.");
         }
     }
