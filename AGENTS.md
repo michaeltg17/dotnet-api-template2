@@ -6,10 +6,10 @@
 
 - **Api** — ASP.NET Core minimal API with endpoints organized by resource
 - **Application** — Business logic, services, exceptions, and request/response models
-- **Domain** — Domain entities (EF Core models)
-- **Persistence** — EF Core DbContext, interceptors, and data access
+- **Domain** — Domain entities (EF Core models) and validators
+- **Persistence** — EF Core DbContext, configurations, and data access
 - **Persistence.Migrations** — dbup-based SQL migration runner
-- **Core** — Shared domain interfaces (IAudited, IIdentifiable, IGloballyIdentifiable), Builder pattern, and helpers
+- **Core** — Builder pattern and helpers
 - **CrossCutting** — Shared concerns: logging extensions, settings, and DI configurators
 - **ApiClient** — HTTP client library with endpoints, extensions, and exceptions
 
@@ -45,22 +45,16 @@
 │   │   │   │   ├── GetOkEndpoint.cs
 │   │   │   │   ├── PostEndpoint.cs
 │   │   │   │   └── ThrowInternalServerErrorEndpoint.cs
-│   │   │   ├── Image/
-│   │   │   │   └── GetImageEndpoint.cs
-│   │   │   ├── ImageGroup/
-│   │   │   │   ├── SaveImageGroupEndpoint.cs
-│   │   │   │   ├── GetImageGroupEndpoint.cs
-│   │   │   │   ├── DeleteImageGroupEndpoint.cs
-│   │   │   │   └── DeleteImageGroupV2Endpoint.cs
-│   │   │   └── Export/
-│   │   │       └── ExportEndpoint.cs
-│   │   ├── Exceptions/
-│   │   │   └── ApiException.cs
+│   │   │   └── Products/
+│   │   │       ├── CreateProductEndpoint.cs
+│   │   │       ├── GetProductEndpoint.cs
+│   │   │       ├── GetAllProductsEndpoint.cs
+│   │   │       ├── UpdateProductEndpoint.cs
+│   │   │       └── DeleteProductsEndpoint.cs
 │   │   ├── Extensions/
 │   │   │   ├── EndpointExtensions.cs
 │   │   │   ├── ExceptionHandlerExtensions.cs
-│   │   │   ├── RoutingEndpointConventionBuilderExtensions.cs
-│   │   │   └── WebApplicationExtensions.cs
+│   │   │   └── ValidationFailureExtensions.cs
 │   │   ├── Models/
 │   │   │   └── Requests/
 │   │   │       └── PostRequest.cs
@@ -82,82 +76,53 @@
 │   ├── Application/                # business logic
 │   │   ├── Application.csproj
 │   │   ├── DependencyConfigurator.cs
-│   │   ├── Extensions/
-│   │   │   └── SpreadCheetahExtensions.cs
 │   │   ├── Exceptions/
 │   │   │   ├── AppException.cs            # base exception
 │   │   │   ├── NotFoundException.cs
-│   │   │   └── NotFoundException(T).cs
+│   │   │   ├── NotFoundException(T).cs
+│   │   │   ├── NotAllFoundException.cs
+│   │   │   └── NotAllFoundException(T).cs
 │   │   ├── Models/
-│   │   │   ├── DataTransferObjects/
-│   │   │   │   ├── Entity.cs
-│   │   │   │   ├── Image.cs
-│   │   │   │   └── ImageGroup.cs
+│   │   │   ├── Requests/
+│   │   │   │   ├── CreateProductRequest.cs
+│   │   │   │   ├── UpdateProductRequest.cs
+│   │   │   │   └── DeleteProductsRequest.cs
 │   │   │   └── Responses/
-│   │   │       └── File.cs
+│   │   │       └── DeleteProductsResponse.cs
 │   │   └── Services/
-│   │       ├── ExcelExportService.cs
-│   │       ├── IMyService.cs
-│   │       ├── ImageService.cs
-│   │       ├── MyService.cs
-│   │       └── TestService.cs
-│   ├── Core/                       # shared domain interfaces and helpers
+│   │       └── ProductService.cs
+│   ├── Core/                       # builder pattern and helpers
 │   │   ├── Core.csproj
-│   │   ├── IFactory.cs
 │   │   ├── Builders/
 │   │   │   ├── Builder.cs
 │   │   │   ├── BuilderWithInstance.cs
 │   │   │   ├── BuilderWithValues.cs
 │   │   │   └── IBuilder.cs
-│   │   ├── Domain/
-│   │   │   ├── IAudited.cs                # CreatedBy, CreatedOn, ModifiedBy, ModifiedOn
-│   │   │   ├── IIdentifiable.cs           # long Id
-│   │   │   └── IGloballyIdentifiable.cs   # Guid Guid
 │   │   └── Extensions/
-│   │       ├── DateTimeExtensions.cs
-│   │       ├── IEnumerableExtensions.cs
-│   │       ├── StringExtensions.cs
-│   │       └── TypeExtensions.cs          # helper for type names
+│   │       └── TypeExtensions.cs       # helper for type names
 │   ├── CrossCutting/               # shared concerns
 │   │   ├── CrossCutting.csproj
 │   │   ├── DependencyConfigurator.cs
 │   │   ├── Logging/
-│   │   │   └── ILoggerExtensions.cs       # source-generated log messages
+│   │   │   └── ILoggerExtensions.cs    # source-generated log messages
 │   │   └── Settings/
 │   │       ├── IApiSettings.cs
-│   │       ├── ApiSettings.cs             # POCO bound from config (Url, SqlServerConnectionString, ImagesStoragePath, ImagesRequestPath)
-│   │       └── ApiSettingsValidator.cs    # IValidateOptions for settings
+│   │       ├── ApiSettings.cs          # POCO bound from config
+│   │       └── ApiSettingsValidator.cs # IValidateOptions for settings
 │   ├── Domain/                     # domain entities
 │   │   ├── Domain.csproj
-│   │   ├── ITestable.cs
 │   │   ├── Models/
 │   │   │   ├── Entity.cs
-│   │   │   ├── Customer.cs
-│   │   │   ├── Image.cs
-│   │   │   ├── ImageFileExtension.cs
-│   │   │   ├── ImageGroup.cs
-│   │   │   ├── ImageResolution.cs
-│   │   │   ├── ImageType.cs
-│   │   │   ├── Order.cs
-│   │   │   ├── OrderLine.cs
-│   │   │   ├── Product.cs
-│   │   │   └── User.cs
+│   │   │   └── Product.cs
 │   │   └── Validators/
 │   │       └── ProductValidator.cs
 │   ├── Persistence/                # EF Core data access
 │   │   ├── Persistence.csproj
 │   │   ├── DependencyConfigurator.cs
 │   │   ├── AppDbContext.cs
-│   │   ├── Configurations/
-│   │   │   ├── EntityConfiguration.cs
-│   │   │   ├── ImageConfiguration.cs
-│   │   │   ├── ImageFileExtensionConfiguration.cs
-│   │   │   ├── ImageGroupConfiguration.cs
-│   │   │   ├── ImageResolutionConfiguration.cs
-│   │   │   ├── ImageTypeConfiguration.cs
-│   │   │   └── UserConfiguration.cs
-│   │   └── Interceptors/
-│   │       └── SetAuditInfoSaveChangesInterceptor.cs
+│   │   └── Configurations/
+│   │       ├── EntityConfiguration.cs
+│   │       └── ProductConfiguration.cs
 │   └── Persistence.Migrations/     # dbup SQL migration runner
 │       ├── Persistence.Migrations.csproj
 │       ├── Program.cs
@@ -167,38 +132,88 @@
 │       └── Scripts/
 │           └── 0001_Initial.sql
 └── tests/
-    ├── Core.Testing/               # shared test utilities (builders, models, validators)
+    ├── Core.Testing/               # shared test utilities (builders, validators)
     │   ├── Core.Testing.csproj
     │   ├── Builders/
     │   │   ├── ProductBuilder.cs
+    │   │   ├── CreateProductRequestBuilder.cs
+    │   │   ├── UpdateProductRequestBuilder.cs
+    │   │   ├── DeleteProductsRequestBuilder.cs
+    │   │   ├── DeleteProductsResponseBuilder.cs
     │   │   └── ProblemDetailsBuilder.cs
     │   ├── Extensions/
-    │   │   ├── AutoFixture/StringGuardClauseAssertion.cs
     │   │   ├── HttpResponseMessageExtensions.cs
     │   │   └── ProblemDetailsExtensions.cs
-    │   ├── Helpers/
-    │   │   └── TestFileHelper.cs
-    │   ├── Models/
-    │   │   ├── Entity.cs
-    │   │   ├── Image.cs
-    │   │   └── ImageGroup.cs
     │   └── Validators/
+    │       ├── ExceptionValidator.cs
     │       ├── ProblemDetailsValidator.cs
     │       └── TraceIdValidator.cs
-    ├── FunctionalTests/            # E2E tests against live API (requires docker-compose)
+    ├── UnitTests/                  # isolated unit tests
+    │   ├── UnitTests.csproj
+    │   ├── Core/
+    │   │   └── TypeExtensionsTests.cs
+    │   ├── Core/Testing/Validators/
+    │   │   ├── ExceptionValidatorTests.cs
+    │   │   └── TraceIdValidatorTests.cs
+    │   └── Domain/Validators/
+    │       └── ProductValidatorTests.cs
     ├── IntegrationTests/           # WebApplicationFactory + Testcontainers.MsSql
-    └── UnitTests/                  # isolated unit tests
+    │   ├── IntegrationTests.csproj
+    │   ├── BeforeAfterTestConfiguration.cs
+    │   ├── Startup.cs
+    │   ├── Test.cs
+    │   ├── IntegrationTestsException.cs
+    │   ├── TestStartupFilter.cs
+    │   ├── xunit.runner.json
+    │   ├── Settings/
+    │   │   ├── ITestSettings.cs
+    │   │   └── TestSettings.cs
+    │   ├── Collections/
+    │   │   ├── DevelopmentApiCollection.cs
+    │   │   └── ProductionApiCollection.cs
+    │   ├── Fixtures/
+    │   │   ├── WebApplicationFactoryFixture.cs
+    │   │   ├── DevelopmentWebApplicationFactoryFixture.cs
+    │   │   └── ProductionWebApplicationFactoryFixture.cs
+    │   ├── Infrastructure/
+    │   │   ├── Database.cs
+    │   │   └── DatabaseFactory.cs
+    │   └── Tests/
+    │       ├── Api/
+    │       │   ├── ApiBehaviourTests/
+    │       │   │   ├── CommonApiBehaviourTests.cs
+    │       │   │   ├── DevelopmentApiBehaviourTests.cs
+    │       │   │   ├── ProductionApiBehaviourTests.cs
+    │       │   │   └── BadRequestTests.cs
+    │       │   └── Endpoints/Products/
+    │       │       ├── ProductsTest.cs
+    │       │       ├── CreateProductEndpointTests.cs
+    │       │       ├── GetProductEndpointTests.cs
+    │       │       ├── GetAllProductsEndpointTests.cs
+    │       │       ├── UpdateProductEndpointTests.cs
+    │       │       └── DeleteProductsEndpointTests.cs
+    │       └── ApiClient/
+    │           └── ApiClientTests.cs
+    └── FunctionalTests/            # E2E tests against live API (requires docker-compose)
+        ├── FunctionalTests.csproj
+        ├── BeforeAfterTestConfiguration.cs
+        ├── Startup.cs
+        ├── Test.cs
+        └── Settings/
+            ├── ITestSettings.cs
+            ├── TestSettings.cs
+            └── testsettings.json
 ```
 
 ## Configuration
 
-App settings bind to `ApiSettings` via `builder.Configuration`. Validated at startup via `ApiSettingsValidator` using `IValidateOptions`. Application fails to start if required settings are missing (`Url`, `SqlServerConnectionString`, `ImagesStoragePath`, `ImagesRequestPath`).
+App settings bind to `ApiSettings` via `builder.Configuration`. Validated at startup via `ApiSettingsValidator` using `IValidateOptions`. Application fails to start if required settings are missing.
 
 `Program.cs` is a minimal entrypoint that delegates to `Startup.Run()` for DI setup, Serilog configuration, and endpoint registration.
 
 ## Endpoints
 
-Endpoints are organized under `src/Api/Endpoints/` by resource. Each resource has its own subfolder (e.g., `ImageGroup/`) containing individual endpoint files. Each endpoint is a `static class` with a `Map(IEndpointRouteBuilder)` method.
+Endpoints are organized under `src/Api/Endpoints/` by resource. Each resource has its own subfolder (e.g., `Products/`) containing individual endpoint files. Each endpoint is a `static class` with a `Map(IEndpointRouteBuilder)` method.
 
 Responses use `application/problem+json`. Invalid requests return 400, other errors return 500 with details hidden in production.
 
