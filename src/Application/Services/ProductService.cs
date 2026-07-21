@@ -1,31 +1,48 @@
+using System.IO;
 using FluentValidation;
 using Application.Exceptions;
 using Application.Models.Requests;
 using Application.Models.Responses;
-using Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
-using Microsoft.Extensions.Logging;
 using CrossCutting.Logging;
+using CrossCutting.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Persistence;
+using Application.Models;
+using Domain.Models;
 
 namespace Application.Services
 {
-    public class ProductService(AppDbContext context, IValidator<Product> validator, ILogger<ProductService> logger)
+    public class ProductService(
+        AppDbContext context,
+        IValidator<Product> validator,
+        ILogger<ProductService> logger,
+        IApiSettings apiSettings)
     {
+        //This to settings
+        private const long MaxImageSizeBytes = 25 * 1024 * 1024;
+        private static readonly HashSet<string> AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".avif", ".svg"];
+
         public async Task<Product> GetById(long id)
         {
             var product = await context.Products.FindAsync(id).ConfigureAwait(false);
             if (product is null)
                 throw new NotFoundException<Product>(id);
 
+            product.ImageUrl = BuildImageUrl(product.Id);
             return product;
         }
 
         public async Task<IEnumerable<Product>> GetAll()
         {
-            return await context.Products
+            var products = await context.Products
                 .ToListAsync()
                 .ConfigureAwait(false);
+
+            foreach (var product in products)
+                product.ImageUrl = BuildImageUrl(product.Id);
+
+            return products;
         }
 
         public async Task<Product> Create(CreateProductRequest request)
@@ -35,11 +52,20 @@ namespace Application.Services
             {
                 Name = request.Name,
                 Description = request.Description,
-                Price = request.Price,
+                Price = request.Price
             };
             validator.ValidateAndThrow(product);
+
             await context.Products.AddAsync(product).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
+
+            if (request.ImageFileName != null)
+            {
+                await SaveImage(product.Id, request.ImageData!, request.ImageFileName)
+                    .ConfigureAwait(false);
+            }
+
+            product.ImageUrl = BuildImageUrl(product.Id);
             logger.LogProductCreated(product.Id);
             return product;
         }
@@ -47,21 +73,29 @@ namespace Application.Services
         public async Task<Product> Update(long id, UpdateProductRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
-            var product = await context.Products.FindAsync(id).ConfigureAwait(false);
-            if (product is null)
-                throw new NotFoundException<Product>(id);
+            var product = await context.Products.FindAsync(id).ConfigureAwait(false)
+                ?? throw new NotFoundException<Product>(id);
 
             product.Name = request.Name;
             product.Description = request.Description;
             product.Price = request.Price;
             validator.ValidateAndThrow(product);
+
+            if (request.ImageFileName != null)
+            {
+                DeleteImage(product.Id);
+                await SaveImage(id, request.ImageData!, request.ImageFileName).ConfigureAwait(false);
+            }
+
             await context.SaveChangesAsync().ConfigureAwait(false);
+            product.ImageUrl = BuildImageUrl(product.Id);
             logger.LogProductUpdated(product.Id);
             return product;
         }
 
         public async Task<DeleteProductsResponse> Delete(DeleteProductsRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
             var products = await context.Products
                 .Where(p => request.Ids.Contains(p.Id))
                 .ToListAsync()
@@ -77,11 +111,49 @@ namespace Application.Services
             {
                 context.Products.RemoveRange(products);
                 await context.SaveChangesAsync().ConfigureAwait(false);
+                foreach (var product in products)
+                {
+                    DeleteImage(product.Id);
+                }
             }
 
             logger.LogProductsDeleted(foundIds);
 
             return new DeleteProductsResponse([.. foundIds], notFoundIds);
+        }
+
+        async Task<string> SaveImage(long productId, byte[] imageData, string? fileName)
+        {
+            if (imageData.Length > MaxImageSizeBytes)
+                throw new TemplateException("Image size exceeds the 25MB limit.");
+
+            var extension = fileName != null ? Path.GetExtension(fileName).ToLowerInvariant() : ".png";
+            if (!AllowedExtensions.Contains(extension))
+                throw new TemplateException("Invalid image format. Allowed: jpg, jpeg, png, gif, webp, bmp, tif, tiff, avif, svg");
+
+            Directory.CreateDirectory(apiSettings.ImagesStoragePath);
+
+            var safeFileName = $"{productId}{extension}";
+            var fullPath = Path.Combine(apiSettings.ImagesStoragePath, safeFileName);
+
+            await File.WriteAllBytesAsync(fullPath, imageData).ConfigureAwait(false);
+
+            return safeFileName;
+        }
+
+        void DeleteImage(long productId)
+        {
+            //Build product image to delete, same as in the buildimageurl func
+            var fullPath = Path.Combine(apiSettings.ImagesStoragePath, "");
+            File.Delete(fullPath);
+        }
+
+        string? BuildImageUrl(long productId)
+        {
+            //Build url with furl + find file with this format productId.allowedextension, and return it if exists otherwise null
+            var url = apiSettings.Url.TrimEnd('/');
+            var requestPath = apiSettings.ImagesRequestPath.TrimEnd('/');
+            return $"{url}{requestPath}/{productId}";
         }
     }
 }

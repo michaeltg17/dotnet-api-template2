@@ -1,8 +1,10 @@
-﻿using CrossCutting;
+﻿using Api.Extensions;
+using Application;
+using CrossCutting;
+using CrossCutting.Settings;
+using Microsoft.Extensions.FileProviders;
 using Persistence;
 using Serilog;
-using Api.Extensions;
-using Application;
 
 namespace Api
 {
@@ -66,7 +68,21 @@ namespace Api
             //Exception middleware first to catch exceptions
             app.UseExceptionHandler().UseStatusCodePages();
 
+            app.UseObjectStorage();
+
             app.MapEndpoints();
+
+            return app;
+        }
+
+        static WebApplication UseObjectStorage(this WebApplication app)
+        {
+            var apiSettings = app.Services.GetRequiredService<IApiSettings>();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                RequestPath = apiSettings.ImagesRequestPath,
+                FileProvider = new PhysicalFileProvider(apiSettings.ImagesStoragePath)
+            });
 
             return app;
         }

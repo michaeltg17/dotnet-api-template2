@@ -13,27 +13,49 @@ namespace Core.Testing.Builders
 
         public CreateProductRequestBuilder()
         {
-            Item = new CreateProductRequest(name, description, price);
+            Item = new CreateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price,
+                ImageData = File.ReadAllBytes(@"Images\didi.jpeg"),
+                ImageFileName = "didi.jpeg"
+            };
         }
 
         public CreateProductRequestBuilder WithName(string name)
         {
             this.name = name;
-            Item = new CreateProductRequest(name, description, price);
+            Item = new CreateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
 
         public CreateProductRequestBuilder WithDescription(string description)
         {
             this.description = description;
-            Item = new CreateProductRequest(name, description, price);
+            Item = new CreateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
 
         public CreateProductRequestBuilder WithPrice(decimal price)
         {
             this.price = price;
-            Item = new CreateProductRequest(name, description, price);
+            Item = new CreateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
     }

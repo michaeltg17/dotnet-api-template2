@@ -13,27 +13,47 @@ namespace Core.Testing.Builders
 
         public UpdateProductRequestBuilder()
         {
-            Item = new UpdateProductRequest(name, description, price);
+            Item = new UpdateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
         }
 
         public UpdateProductRequestBuilder WithName(string name)
         {
             this.name = name;
-            Item = new UpdateProductRequest(name, description, price);
+            Item = new UpdateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
 
         public UpdateProductRequestBuilder WithDescription(string description)
         {
             this.description = description;
-            Item = new UpdateProductRequest(name, description, price);
+            Item = new UpdateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
 
         public UpdateProductRequestBuilder WithPrice(decimal price)
         {
             this.price = price;
-            Item = new UpdateProductRequest(name, description, price);
+            Item = new UpdateProductRequest
+            {
+                Name = name,
+                Description = description,
+                Price = price
+            };
             return this;
         }
     }

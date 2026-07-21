@@ -12,6 +12,8 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
     public abstract class ProductsTest : Test
     {
         protected const string BaseInstance = "/api/Products";
+        protected const string ImageFileName = "didi.jpeg";
+        protected static byte[] Image = File.ReadAllBytes(ImageFileName);
 
         public List<Product> initialProducts = new();
 

@@ -2,7 +2,7 @@
 {
     public interface ITestSettings
     {
-        public bool KeepAliveDatabase { get; }
-        public bool EnableSqlLogging { get; }
+        bool KeepAliveDatabase { get; }
+        bool EnableSqlLogging { get; }
     }
 }

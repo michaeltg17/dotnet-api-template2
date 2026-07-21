@@ -6,6 +6,8 @@ namespace ApiClient
 {
     public class ApiClient(HttpClient httpClient)
     {
+        public HttpClient HttpClient { get; } = httpClient;
+
         public TestEndpoints Test { get; } = new(httpClient);
 
         const string BasePath = "/api";
@@ -25,19 +27,45 @@ namespace ApiClient
             return httpClient.GetAsync($"{BasePath}/Products/{id}");
         }
 
-        public Task<HttpResponseMessage> CreateProduct(CreateProductRequest request)
+        public async Task<HttpResponseMessage> CreateProduct(CreateProductRequest request)
         {
-            return httpClient.PostAsJsonAsync($"{BasePath}/Products", request);
+            using var content = new MultipartFormDataContent
+            {
+                { new StringContent(request.Name), "name" },
+                { new StringContent(request.Description), "description" },
+                { new StringContent(request.Price.ToString()), "price" }
+            };
+
+            if (request.ImageData != null)
+            {
+                var fileName = request.ImageFileName ?? "image.png";
+                content.Add(new ByteArrayContent(request.ImageData), "image", fileName);
+            }
+
+            return await httpClient.PostAsync($"{BasePath}/Products", content).ConfigureAwait(false);
         }
 
-        public Task<HttpResponseMessage> UpdateProduct(long id, UpdateProductRequest request)
+        public async Task<HttpResponseMessage> UpdateProduct(long id, UpdateProductRequest request)
         {
-            return UpdateProduct((object)id, request);
+            return await UpdateProduct((object)id, request).ConfigureAwait(false);
         }
 
-        public Task<HttpResponseMessage> UpdateProduct(object id, UpdateProductRequest request)
+        public async Task<HttpResponseMessage> UpdateProduct(object id, UpdateProductRequest request)
         {
-            return httpClient.PutAsJsonAsync($"{BasePath}/Products/{id}", request);
+            using var content = new MultipartFormDataContent
+            {
+                { new StringContent(request.Name), "name" },
+                { new StringContent(request.Description), "description" },
+                { new StringContent(request.Price.ToString()), "price" }
+            };
+
+            if (request.ImageData != null)
+            {
+                var fileName = request.ImageFileName ?? "image.png";
+                content.Add(new ByteArrayContent(request.ImageData), "image", fileName);
+            }
+
+            return await httpClient.PutAsync($"{BasePath}/Products/{id}", content).ConfigureAwait(false);
         }
 
         public async Task<HttpResponseMessage> DeleteProducts(DeleteProductsRequest request)

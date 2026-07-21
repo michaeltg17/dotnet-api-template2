@@ -7,6 +7,7 @@ using IntegrationTests.Collections;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Xunit;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace IntegrationTests.Tests.Api.Endpoints.Products
 {
@@ -18,27 +19,32 @@ namespace IntegrationTests.Tests.Api.Endpoints.Products
         {
             //Given
             await CreateProducts();
-            var product = initialProducts[1];
+            var initialProduct = initialProducts[1];
 
             //When
-            var response = await ApiClient.GetProduct(product.Id);
+            var response = await ApiClient.GetProduct(initialProduct.Id);
 
             //Then
-            var result = await response.To<Product>();
+            var product = await response.To<Product>();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var expected = new ProductBuilder()
                 .WithValues(p =>
                 {
-                    p.Id = product.Id;
-                    p.Name = product.Name;
-                    p.Description = product.Description;
-                    p.Price = product.Price;
+                    p.Id = initialProduct.Id;
+                    p.Name = initialProduct.Name;
+                    p.Description = initialProduct.Description;
+                    p.Price = initialProduct.Price;
+                    p.ImageUrl = product.ImageUrl;
                 })
                 .Build();
 
-            result.Id.Should().BeGreaterThan(0);
-            result.Should().BeEquivalentTo(expected);
+            product.Id.Should().BeGreaterThan(0);
+            product.Should().BeEquivalentTo(expected);
+            var productImage = await ApiClient.HttpClient.GetByteArrayAsync(
+                new Uri(product.ImageUrl!),
+                TestContext.Current.CancellationToken);
+            productImage.Should().BeEquivalentTo(Image);
         }
 
         [Fact]
