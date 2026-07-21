@@ -10,7 +10,7 @@ namespace CrossCutting
         {
             services
                 .AddOptions<TemplateSettings>()
-                .BindConfiguration(TemplateSettings.Section)
+                .BindConfiguration(ITemplateSettings.Section)
                 .ValidateOnStart();
 
             services.AddSingleton<IValidateOptions<TemplateSettings>, TemplateSettingsValidator>();

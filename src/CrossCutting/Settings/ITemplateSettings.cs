@@ -2,6 +2,7 @@
 {
     public interface ITemplateSettings
     {
+        public const string Section = "Template";
         public string ApiUrl { get; }
         public string ImagesStoragePath { get; }
         public string ImagesRequestPath { get; }
