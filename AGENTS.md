@@ -77,7 +77,7 @@
 │   │   ├── Application.csproj
 │   │   ├── DependencyConfigurator.cs
 │   │   ├── Exceptions/
-│   │   │   ├── AppException.cs            # base exception
+│   │   │   ├── TemplateException.cs       # base exception
 │   │   │   ├── NotFoundException.cs
 │   │   │   ├── NotFoundException(T).cs
 │   │   │   ├── NotAllFoundException.cs
@@ -106,9 +106,9 @@
 │   │   ├── Logging/
 │   │   │   └── ILoggerExtensions.cs    # source-generated log messages
 │   │   └── Settings/
-│   │       ├── IApiSettings.cs
-│   │       ├── ApiSettings.cs          # POCO bound from config
-│   │       └── ApiSettingsValidator.cs # IValidateOptions for settings
+│   │       ├── ITemplateSettings.cs
+    │   │       ├── TemplateSettings.cs     # POCO bound from config
+    │   │       └── TemplateSettingsValidator.cs # IValidateOptions for settings
 │   ├── Domain/                     # domain entities
 │   │   ├── Domain.csproj
 │   │   ├── Models/
@@ -143,7 +143,8 @@
     │   │   └── ProblemDetailsBuilder.cs
     │   ├── Extensions/
     │   │   ├── HttpResponseMessageExtensions.cs
-    │   │   └── ProblemDetailsExtensions.cs
+    │   │   ├── ProblemDetailsExtensions.cs
+    │   │   └── LogEventPropertyAssertionExtensions.cs
     │   └── Validators/
     │       ├── ExceptionValidator.cs
     │       ├── ProblemDetailsValidator.cs
@@ -207,7 +208,7 @@
 
 ## Configuration
 
-App settings bind to `ApiSettings` via `builder.Configuration`. Validated at startup via `ApiSettingsValidator` using `IValidateOptions`. Application fails to start if required settings are missing.
+App settings bind to `TemplateSettings` via `builder.Configuration`. Validated at startup via `TemplateSettingsValidator` using `IValidateOptions`. Application fails to start if required settings are missing.
 
 `Program.cs` is a minimal entrypoint that delegates to `Startup.Run()` for DI setup, Serilog configuration, and endpoint registration.
 
@@ -240,6 +241,13 @@ Three test projects: `UnitTests`, `IntegrationTests`, `FunctionalTests`, plus `C
 - **FunctionalTests** — E2E tests against a live API; requires `docker compose up` and `ApiUrl` in `Settings/testsettings.json`
 
 CI runs via `ci-docker.sh` which builds `Dockerfile.ci` and mounts the Docker socket to enable Testcontainers.
+
+## Logging Overrides
+
+Serilog level overrides in `appsettings.json` under `MinimumLevel.Override`. Known overrides to silence noisy defaults:
+
+- `"Microsoft.EntityFrameworkCore.Database.Command": "Warning"` — suppresses verbose SQL query logging. Set to `Information` in `appsettings.Development.json` for dev-only SQL visibility.
+- `"Microsoft.AspNetCore.Mvc.Infrastructure": "Warning"` — suppresses the useless "No action descriptors found" startup message.
 
 ## Coding Conventions
 
