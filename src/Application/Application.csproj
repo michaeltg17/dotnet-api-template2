@@ -3,6 +3,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Flurl" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" />
   </ItemGroup>
 
   <ItemGroup>

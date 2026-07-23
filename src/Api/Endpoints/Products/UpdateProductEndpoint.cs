@@ -12,11 +12,8 @@ internal static class UpdateProductEndpoint
     {
         app.MapPut("/{id:long}", static async (
             long id,
-            [FromForm] string name,
-            [FromForm] string description,
-            [FromForm] decimal price,
-            [FromForm] IFormFile? image,
-            [FromServices] ProductService productService) =>
+            [FromForm] UpdateProductRequest request,
+            ProductService productService) =>
         {
             byte[]? imageData = null;
             string? imageFileName = null;
@@ -28,14 +25,6 @@ internal static class UpdateProductEndpoint
                 imageFileName = image.FileName;
             }
 
-            var request = new UpdateProductRequest
-            {
-                Name = name,
-                Description = description,
-                Price = price,
-                ImageData = imageData,
-                ImageFileName = imageFileName
-            };
             var product = await productService.Update(id, request).ConfigureAwait(false);
             return Results.Ok(product);
         });

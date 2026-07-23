@@ -10,7 +10,7 @@ internal static class DeleteProductsEndpoint
     {
         app.MapDelete("/", static async (
             [FromBody] DeleteProductsRequest request,
-            [FromServices] ProductService productService) =>
+            ProductService productService) =>
         {
             var response = await productService.Delete(request).ConfigureAwait(false);
             return Results.Ok(response);
