@@ -3,6 +3,8 @@
 
 .NET 10, ASP.NET Core Api + Tests template of my recommended architecture for a successful, dev efficient and scalable solution. 
 
+Full description of the architecture there: [ARCHITECTURE.md](https://github.com/michaeltg17/Template.Api/ARCHITECTURE.md)
+
 ## Tech stack
 API:
 - ASP.NET Core
